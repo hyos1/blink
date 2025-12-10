@@ -1,0 +1,124 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Blink - Feed</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .post-card { border: 1px solid #e9ecef; border-radius: 8px; background: #fff; }
+        .post-image { width: 100%; height: 300px; object-fit: cover; border-bottom: 1px solid #eee; }
+        .author { font-weight: 600; }
+        .caption { white-space: pre-wrap; }
+    </style>
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-light bg-white border-bottom mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="/" th:href="@{/}">Blink</a>
+        <div>
+            <a class="btn btn-outline-primary me-2" th:href="@{/posts/create}">New Post</a>
+            <a class="btn btn-outline-secondary" th:href="@{/logout}">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <!-- optional: two-column layout -->
+    <div class="row">
+        <div class="col-lg-8">
+
+            <!-- Posts list -->
+            <div th:if="${#lists.isEmpty(posts)}">
+                <div class="alert alert-secondary">아직 게시물이 없습니다.</div>
+            </div>
+
+            <div th:each="post : ${posts}" class="mb-4 post-card">
+                <div class="p-3 d-flex align-items-center">
+                    <img th:src="${post.author.profileImageUrl}" alt="profile" class="rounded-circle" style="width:48px;height:48px;object-fit:cover;">
+                    <div class="ms-2">
+                        <div class="author" th:text="${post.author.nickname}">nickname</div>
+                        <small class="text-muted" th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">time</small>
+                    </div>
+                </div>
+
+                <img th:if="${post.imageUrl != null}" th:src="${post.imageUrl}" class="post-image" alt="post image">
+                <div class="p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <button class="btn btn-sm btn-link p-0 me-3"
+                                    th:onclick="|location.href='@{/posts/{id}(id=${post.id})}'|">View</button>
+                            <button class="btn btn-sm btn-outline-danger p-0"
+                                    th:onclick="|location.href='@{/posts/{id}/like(id=${post.id})}'|">
+                                ❤ <span th:text="${post.likeCount}">0</span>
+                            </button>
+                        </div>
+                        <small class="text-muted" th:text="${post.location}">location</small>
+                    </div>
+
+                    <p class="mb-1 caption"><span class="author" th:text="${post.author.nickname}">author</span>
+                        <span th:text="${post.caption}">caption</span>
+                    </p>
+
+                    <!-- comments preview -->
+                    <div class="mt-2">
+                        <small class="text-muted" th:each="c : ${post.comments}" th:text="${c.user.nickname + ': ' + c.content}"
+                               th:unless="${iter.index > 2}">comment</small>
+                        <div th:if="${post.comments.size() > 3}">
+                            <small class="text-muted">댓글 더보기...</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- pagination -->
+            <nav th:if="${page != null}">
+                <ul class="pagination">
+                    <li class="page-item" th:classappend="${page.hasPrevious()} ? '' : 'disabled'">
+                        <a class="page-link" th:href="@{/main(page=${page.number-1})}">Prev</a>
+                    </li>
+                    <li class="page-item disabled"><span class="page-link" th:text="${page.number + 1}">1</span></li>
+                    <li class="page-item" th:classappend="${page.hasNext()} ? '' : 'disabled'">
+                        <a class="page-link" th:href="@{/main(page=${page.number+1})}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+
+        </div>
+
+        <div class="col-lg-4">
+            <!-- user profile mini -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex align-items-center">
+                        <img th:src="${me.profileImageUrl}" class="rounded-circle me-2" style="width:56px;height:56px;object-fit:cover;">
+                        <div>
+                            <div th:text="${me.nickname}">MyName</div>
+                            <small class="text-muted" th:text="${me.email}">email</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- simple suggestions -->
+            <div class="card">
+                <div class="card-body">
+                    <h6>People to follow</h6>
+                    <div th:each="u : ${suggestions}" class="d-flex align-items-center mb-2">
+                        <img th:src="${u.profileImageUrl}" class="rounded-circle me-2" style="width:36px;height:36px;object-fit:cover;">
+                        <div class="flex-grow-1">
+                            <div th:text="${u.nickname}">someone</div>
+                        </div>
+                        <a class="btn btn-sm btn-outline-primary" th:href="@{/follow/{id}(id=${u.id})}">Follow</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
