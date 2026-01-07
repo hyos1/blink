@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blink - 회원가입</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            gap: 30px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* 왼쪽 소개 섹션 */
+        .intro-section {
+            flex: 1;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo-large {
+            font-size: 56px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .intro-text {
+            font-size: 20px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 16px;
+        }
+
+        .feature-icon {
+            font-size: 24px;
+        }
+
+        /* 오른쪽 폼 섹션 */
+        .form-section {
+            width: 400px;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-logo-text {
+            font-size: 42px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-subtitle {
+            text-align: center;
+            color: #8e8e8e;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 6px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-field:focus {
+            border-color: #bc1888;
+        }
+
+        .input-field.error {
+            border-color: #ed4956;
+        }
+
+        .field-error {
+            border-color: #dc3545;
+            color: #ed4956;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 8px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .terms {
+            text-align: center;
+            font-size: 11px;
+            color: #8e8e8e;
+            line-height: 1.5;
+            margin-top: 20px;
+        }
+
+        .terms a {
+            color: #8e8e8e;
+            text-decoration: none;
+        }
+
+        .terms a:hover {
+            text-decoration: underline;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 14px;
+            color: #262626;
+        }
+
+        .form-link {
+            color: #0095f6;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .form-link:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .intro-section {
+                text-align: center;
+            }
+
+            .feature-item {
+                justify-content: center;
+            }
+
+            .form-section {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- 왼쪽 소개 섹션 -->
+    <div class="intro-section">
+        <div class="logo-large">Blink</div>
+        <div class="intro-text">
+            순간을 공유하고,<br>
+            사람들과 연결되세요.
+        </div>
+        <div class="features">
+            <div class="feature-item">
+                <span class="feature-icon">📸</span>
+                <span>일상의 순간을 공유하세요</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">💬</span>
+                <span>친구들과 소통하세요</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">❤️</span>
+                <span>좋아하는 콘텐츠를 발견하세요</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🌟</span>
+                <span>새로운 사람들을 만나보세요</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 회원가입 폼 -->
+    <div class="form-section">
+        <div class="form-logo">
+            <div class="form-logo-text">Blink</div>
+        </div>
+
+        <div class="form-subtitle">친구들의 사진과 동영상을 보려면 가입하세요.</div>
+
+        <!-- Thymeleaf에서 에러 메시지 표시 -->
+        <!--
+        <div th:if="${error}" class="error-message">
+            <span th:text="${error}">회원가입에 실패했습니다.</span>
+        </div>
+        -->
+
+        <!-- action을 컨트롤러 URL로 변경 (예: /signup) -->
+        <form action="/members/add" th:action th:object="${signupForm}" method="post">
+
+            <div class="input-group">
+                <label for="name" class="input-label">이름</label>
+                <input type="text" id="name" th:field="*{name}"
+                       class="input-field"
+                       th:errorclass="field-error">
+                <div class="field-error" th:errors="*{name}">
+                    이름 오류
+                </div>
+                <!-- Thymeleaf 필드 에러
+                <div th:if="${#fields.hasErrors('name')}" class="field-error">
+                    <span th:errors="*{name}"></span>
+                </div>
+                -->
+            </div>
+
+            <div class="input-group">
+                <label for="email" class="input-label">이메일</label>
+                <input type="email" id="email" th:field="*{email}"
+                       class="input-field"
+                       th:errorclass="field-error">
+                <div class="field-error" th:errors="*{email}">
+                    이메일 오류
+                </div>
+                <!-- Thymeleaf 필드 에러
+                <div th:if="${#fields.hasErrors('email')}" class="field-error">
+                    <span th:errors="*{email}"></span>
+                </div>
+                -->
+            </div>
+
+            <div class="input-group">
+                <label for="password" class="input-label">비밀번호</label>
+                <input type="password" id="password" th:field="*{password}"
+                       class="input-field"
+                       th:errorclass="field-error">
+                <div class="field-error" th:errors="*{password}">
+                    비밀번호 오류
+                </div>
+                <!-- Thymeleaf 필드 에러
+                <div th:if="${#fields.hasErrors('password')}" class="field-error">
+                    <span th:errors="*{password}"></span>
+                </div>
+                -->
+            </div>
+
+            <button type="submit" class="submit-btn">가입하기</button>
+        </form>
+
+        <div class="terms">
+            가입하면 Blink의 <a href="#">약관</a>, <a href="#">개인정보처리방침</a> 및<br>
+            <a href="#">쿠키 정책</a>에 동의하게 됩니다.
+        </div>
+
+        <div class="form-footer">
+            계정이 있으신가요? <a href="/login" class="form-link">로그인</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
