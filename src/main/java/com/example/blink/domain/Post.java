@@ -26,6 +26,13 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @OneToMany(mappedBy = "post", orphanRemoval = true)
+    // 게시물의 댓글들 (게시물 삭제 시 댓글도 삭제)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
+    // 게시물의 좋아요들 (게시물 삭제 시 좋아요도 삭제)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> postLikes = new ArrayList<>();
+
+    // 편의 메서드
 }

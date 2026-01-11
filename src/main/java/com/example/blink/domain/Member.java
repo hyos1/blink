@@ -44,6 +44,10 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    // 회원이 누른 좋아요들 (회원 삭제 시 좋아요도 삭제)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> postLikes = new ArrayList<>();
+
 
 
     public Member(String name, String email, String password) {
