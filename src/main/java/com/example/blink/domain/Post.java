@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "posts")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Post extends BaseEntity {
@@ -34,5 +35,30 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLikes = new ArrayList<>();
 
+    // 게시물 이미지들 (게시물 삭제 시 이미지도 삭제)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostImage> images = new ArrayList<>();
+
     // 편의 메서드
+
+    public void writtenBy(Member member) {
+        this.member = member;
+        member.getPosts().add(this);
+    }
+
+    public void addImage(PostImage image) {
+        images.add(image);
+        image.attachTo(this);
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+        comment.attachTo(this);
+    }
+
+    public void addLike(PostLike like) {
+        postLikes.add(like);
+        like.attachTo(this);
+    }
+
 }
