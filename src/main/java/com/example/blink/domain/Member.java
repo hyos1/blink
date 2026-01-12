@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 //@Table(uniqueConstraints =
 //        {@UniqueConstraint(name = "uk_member_email", columnNames = "email")})
-@Table
+@Table(name = "members")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member extends BaseEntity {
@@ -30,7 +30,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    private String profileImageUrl; //
+    private String profileImage; //
 
     private String bio; // 프로필 한 줄 소개
 
@@ -48,6 +48,13 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLikes = new ArrayList<>();
 
+    // "내가" 팔로우한 사람들 (회원 삭제 시 팔로우 관계도 삭제)
+    @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Follow> followings = new ArrayList<>();
+
+    // "나를" 팔로우하는 사람들 (회원 삭제 시 팔로우 관계도 삭제)
+    @OneToMany(mappedBy = "following", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Follow> followers = new ArrayList<>();
 
 
     public Member(String name, String email, String password) {
