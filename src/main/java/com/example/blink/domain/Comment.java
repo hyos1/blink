@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "comments")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Comment extends BaseEntity {
@@ -26,18 +27,10 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-
     // 편의 메서드
 
-    // 게시물에 댓글 달기
-    public void setPost(Post post) {
+    public void attachTo(Post post) {
         this.post = post;
-        post.getComments().add(this);
+        this.member = post.getMember();
     }
-
-    public void setMember(Member member) {
-        this.member = member;
-        member.getComments().add(this);
-    }
-
 }

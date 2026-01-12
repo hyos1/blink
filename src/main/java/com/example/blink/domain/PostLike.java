@@ -6,9 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "post_likes")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostLike extends BaseEntity{
+public class PostLike extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_like_id")
@@ -25,13 +26,8 @@ public class PostLike extends BaseEntity{
     private Post post;
 
     // 편의 메서드
-    public void setPost(Post post) {
+    public void attachTo(Post post) {
         this.post = post;
-        post.getPostLikes().add(this);
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
-        member.getPostLikes().add(this);
+        this.member = post.getMember();
     }
 }
