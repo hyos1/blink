@@ -27,6 +27,10 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
+    // 게시물 이미지들 (게시물 삭제 시 이미지도 삭제)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostImage> images = new ArrayList<>();
+
     // 게시물의 댓글들 (게시물 삭제 시 댓글도 삭제)
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
@@ -35,9 +39,11 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLikes = new ArrayList<>();
 
-    // 게시물 이미지들 (게시물 삭제 시 이미지도 삭제)
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostImage> images = new ArrayList<>();
+    public Post(String content, Member member) {
+        this.content = content;
+        // Member - Post 편의 메서드
+        writtenBy(member);
+    }
 
     // 편의 메서드
 
@@ -51,14 +57,8 @@ public class Post extends BaseEntity {
         image.attachTo(this);
     }
 
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
-        comment.attachTo(this);
-    }
-
     public void addLike(PostLike like) {
         postLikes.add(like);
         like.attachTo(this);
     }
-
 }
