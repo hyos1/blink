@@ -1,7 +1,8 @@
 package com.example.blink.web.controller;
 
-import com.example.blink.service.member.MemberService;
-import com.example.blink.domain.Member;
+import com.example.blink.service.login.LoginService;
+import com.example.blink.service.login.request.LoginCommand;
+import com.example.blink.service.login.response.LoginMember;
 import com.example.blink.web.dto.LoginForm;
 import com.example.blink.web.session.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping
 public class LoginController {
 
-    private final MemberService memberService;
+    private final LoginService loginService;
 
     @GetMapping("/login")
     public String login(@ModelAttribute("loginForm") LoginForm form) {
@@ -29,6 +30,7 @@ public class LoginController {
 
     @PostMapping("/login")
     public String loginFormV1(@Validated @ModelAttribute LoginForm form, BindingResult bindingResult,
+                              @RequestParam(defaultValue = "/") String redirectURL,
                               HttpServletRequest request,
                               Model model) {
 
@@ -39,7 +41,9 @@ public class LoginController {
         }
 
         // 아이디
-        Member loginMember = memberService.login(form.getEmail(), form.getPassword());
+        LoginCommand loginCommand = new LoginCommand(form.getEmail(), form.getPassword());
+        // 로그인 후 세션에 넣을 값(id, name)
+        LoginMember loginMember = loginService.login(loginCommand);
         if (loginMember == null) {
             bindingResult.reject("loginFail", "아이디 혹은 비밀번호가 일치하지 않습니다.");
             return "login/loginForm";
@@ -49,9 +53,8 @@ public class LoginController {
         HttpSession session = request.getSession(); //세션이 없으면 생성, 있으면 기존 세션 사용
         session.setAttribute(SessionConst.LOGIN_MEMBER, loginMember);
 
-        model.addAttribute("member", loginMember);
-
-        return "feed";
+        // 로그인 성공 시 기존 요청했던 URL로 이동
+        return "redirect:" + redirectURL;
     }
     // MemberService login로직 Exception 반환으로 처리할 예정
 }
