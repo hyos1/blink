@@ -44,6 +44,7 @@ public class LoginController {
         LoginCommand loginCommand = new LoginCommand(form.getEmail(), form.getPassword());
         // 로그인 후 세션에 넣을 값(id, name)
         LoginMember loginMember = loginService.login(loginCommand);
+        log.info("로그인 통과");
         if (loginMember == null) {
             bindingResult.reject("loginFail", "아이디 혹은 비밀번호가 일치하지 않습니다.");
             return "login/loginForm";
@@ -57,4 +58,14 @@ public class LoginController {
         return "redirect:" + redirectURL;
     }
     // MemberService login로직 Exception 반환으로 처리할 예정
+
+    @PostMapping("/logout")
+    public String logout(HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false); // 세션 새로 생성하지 않음
+        if (session != null) {
+            session.invalidate(); //세션 안에 있는 모든 데이터 삭제
+        }
+        return "redirect:/";
+    }
 }
