@@ -1,124 +1,721 @@
-<!doctype html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Blink - Feed</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blink</title>
     <style>
-        .post-card { border: 1px solid #e9ecef; border-radius: 8px; background: #fff; }
-        .post-image { width: 100%; height: 300px; object-fit: cover; border-bottom: 1px solid #eee; }
-        .author { font-weight: 600; }
-        .caption { white-space: pre-wrap; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #fafafa;
+        }
+
+        /* 상단바 */
+        .top-bar {
+            background: white;
+            border-bottom: 1px solid #dbdbdb;
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .top-bar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 300px;
+            margin: 0 40px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 16px;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            background: #efefef;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            background: white;
+            border-color: #a8a8a8;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* 메인 레이아웃 */
+        .main-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: grid;
+            grid-template-columns: 250px 1fr 300px;
+            gap: 30px;
+        }
+
+        /* 왼쪽 사이드바 */
+        .left-sidebar {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+
+        .profile-section {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .my-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .my-profile-pic {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .my-info .my-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #262626;
+        }
+
+        .my-info .my-name {
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 16px;
+            border-top: 1px solid #efefef;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-weight: 600;
+            font-size: 16px;
+            color: #262626;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+
+        .nav-menu {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #efefef;
+        }
+
+        .nav-item:last-child {
+            border-bottom: none;
+        }
+
+        .nav-item:hover {
+            background: #fafafa;
+        }
+
+        .nav-item.active {
+            background: #f0f0f0;
+            font-weight: 600;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-text {
+            font-size: 14px;
+            color: #262626;
+        }
+
+        /* 중앙 피드 */
+        .feed {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .post {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid #efefef;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #262626;
+        }
+
+        .time {
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+
+        .post-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+        }
+
+        .post-actions {
+            display: flex;
+            padding: 12px 16px;
+            gap: 16px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            padding: 0;
+            transition: transform 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .action-btn.liked {
+            color: #ed4956;
+        }
+
+        .spacer {
+            flex: 1;
+        }
+
+        .post-likes {
+            padding: 0 16px;
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .post-content {
+            padding: 0 16px;
+            margin-bottom: 8px;
+        }
+
+        .post-content .name {
+            margin-right: 6px;
+        }
+
+        .post-text {
+            font-size: 14px;
+            color: #262626;
+            line-height: 1.5;
+        }
+
+        .view-comments {
+            padding: 0 16px;
+            color: #8e8e8e;
+            font-size: 14px;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .add-comment {
+            border-top: 1px solid #efefef;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .comment-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .post-btn {
+            color: #0095f6;
+            font-weight: 600;
+            font-size: 14px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .post-btn:hover {
+            color: #00376b;
+        }
+
+        /* 오른쪽 사이드바 */
+        .right-sidebar {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+
+        .suggestions {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .suggestions-header {
+            font-weight: 600;
+            font-size: 14px;
+            color: #8e8e8e;
+            margin-bottom: 16px;
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .suggestion-pic {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .suggestion-info {
+            flex: 1;
+        }
+
+        .suggestion-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #262626;
+        }
+
+        .suggestion-meta {
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+
+        .follow-btn {
+            background: none;
+            border: none;
+            color: #0095f6;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .follow-btn:hover {
+            color: #00376b;
+        }
+
+        .footer {
+            background: white;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            padding: 20px;
+            font-size: 11px;
+            color: #8e8e8e;
+            line-height: 1.6;
+        }
+
+        .footer-links {
+            margin-bottom: 12px;
+        }
+
+        .footer-link {
+            color: #8e8e8e;
+            text-decoration: none;
+            margin-right: 8px;
+        }
+
+        .footer-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 새 게시물 작성 버튼 */
+        .create-post-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s;
+            z-index: 50;
+        }
+
+        .create-post-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* 반응형 */
+        @media (max-width: 1024px) {
+            .right-sidebar {
+                display: none;
+            }
+            .main-layout {
+                grid-template-columns: 250px 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .left-sidebar {
+                display: none;
+            }
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            .search-box {
+                display: none;
+            }
+        }
     </style>
 </head>
-<body class="bg-light">
-
-<nav class="navbar navbar-light bg-white border-bottom mb-4">
-    <div class="container">
-        <a class="navbar-brand" href="/" th:href="@{/}">Blink</a>
-        <div>
-            <a class="btn btn-outline-primary me-2" th:href="@{/posts/create}">New Post</a>
-            <a class="btn btn-outline-secondary" th:href="@{/logout}">Logout</a>
+<body>
+<!-- 상단바 -->
+<div class="top-bar">
+    <div class="top-bar-content">
+        <div class="logo">Blink</div>
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="🔍 검색">
         </div>
-    </div>
-</nav>
-
-<div class="container">
-    <!-- optional: two-column layout -->
-    <div class="row">
-        <div class="col-lg-8">
-
-            <!-- Posts list -->
-            <div th:if="${#lists.isEmpty(posts)}">
-                <div class="alert alert-secondary">아직 게시물이 없습니다.</div>
-            </div>
-
-            <div th:each="post : ${posts}" class="mb-4 post-card">
-                <div class="p-3 d-flex align-items-center">
-                    <img th:src="${post.author.profileImageUrl}" alt="profile" class="rounded-circle" style="width:48px;height:48px;object-fit:cover;">
-                    <div class="ms-2">
-                        <div class="author" th:text="${member.username}">nickname</div>
-                        <small class="text-muted" th:text="${#dates.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">time</small>
-                    </div>
-                </div>
-
-                <img th:if="${post.imageUrl != null}" th:src="${post.imageUrl}" class="post-image" alt="post image">
-                <div class="p-3">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <div>
-                            <button class="btn btn-sm btn-link p-0 me-3"
-                                    th:onclick="|location.href='@{/posts/{id}(id=${post.id})}'|">View</button>
-                            <button class="btn btn-sm btn-outline-danger p-0"
-                                    th:onclick="|location.href='@{/posts/{id}/like(id=${post.id})}'|">
-                                ❤ <span th:text="${post.likeCount}">0</span>
-                            </button>
-                        </div>
-                        <small class="text-muted" th:text="${post.location}">location</small>
-                    </div>
-
-                    <p class="mb-1 caption"><span class="author" th:text="${post.author.nickname}">author</span>
-                        <span th:text="${post.caption}">caption</span>
-                    </p>
-
-                    <!-- comments preview -->
-                    <div class="mt-2">
-                        <small class="text-muted" th:each="c : ${post.comments}" th:text="${c.user.nickname + ': ' + c.content}"
-                               th:unless="${iter.index > 2}">comment</small>
-                        <div th:if="${post.comments.size() > 3}">
-                            <small class="text-muted">댓글 더보기...</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- pagination -->
-            <nav th:if="${page != null}">
-                <ul class="pagination">
-                    <li class="page-item" th:classappend="${page.hasPrevious()} ? '' : 'disabled'">
-                        <a class="page-link" th:href="@{/main(page=${page.number-1})}">Prev</a>
-                    </li>
-                    <li class="page-item disabled"><span class="page-link" th:text="${page.number + 1}">1</span></li>
-                    <li class="page-item" th:classappend="${page.hasNext()} ? '' : 'disabled'">
-                        <a class="page-link" th:href="@{/main(page=${page.number+1})}">Next</a>
-                    </li>
-                </ul>
-            </nav>
-
-        </div>
-
-        <div class="col-lg-4">
-            <!-- user profile mini -->
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <img th:src="${me.profileImageUrl}" class="rounded-circle me-2" style="width:56px;height:56px;object-fit:cover;">
-                        <div>
-                            <div th:text="${me.nickname}">MyName</div>
-                            <small class="text-muted" th:text="${me.email}">email</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- simple suggestions -->
-            <div class="card">
-                <div class="card-body">
-                    <h6>People to follow</h6>
-                    <div th:each="u : ${suggestions}" class="d-flex align-items-center mb-2">
-                        <img th:src="${u.profileImageUrl}" class="rounded-circle me-2" style="width:36px;height:36px;object-fit:cover;">
-                        <div class="flex-grow-1">
-                            <div th:text="${u.nickname}">someone</div>
-                        </div>
-                        <a class="btn btn-sm btn-outline-primary" th:href="@{/follow/{id}(id=${u.id})}">Follow</a>
-                    </div>
-                </div>
-            </div>
-
+        <div class="top-actions">
+            <button class="icon-btn">🏠</button>
+            <button class="icon-btn">💬</button>
+            <button class="icon-btn">🔔</button>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<!-- 메인 레이아웃 -->
+<div class="main-layout">
+    <!-- 왼쪽 사이드바 -->
+    <aside class="left-sidebar">
+        <div th:object="${myProfile}" class="profile-section">
+            <div class="my-profile">
+                <div class="my-profile-pic">나</div>
+                <div class="my-info">
+                    <div th:text="*{name}" class="my-name">홍길동</div>
+                    <div th:text="*{email}" class="my-name">@hong_gildong</div>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div th:text="*{postCount}" class="stat-number">128</div>
+                    <div class="stat-label">게시물</div>
+                </div>
+                <div class="stat-item">
+                    <div th:text="*{followerCount}" class="stat-number">1.2K</div>
+                    <div class="stat-label">팔로워</div>
+                </div>
+                <div class="stat-item">
+                    <div th:text="*{followerCount}" class="stat-number">842</div>
+                    <div class="stat-label">팔로잉</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="nav-menu">
+            <div class="nav-item active">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">홈</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-text">검색</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">프로필</span>
+            </div>
+            <div class="nav-item">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-text">설정</span>
+            </div>
+            <form id="logoutForm" th:action="@{/logout}" method="post"></form>
+            <div class="nav-item" onclick="logout()">
+                <span class="nav-icon">🚪</span>
+                <span class="nav-text">로그아웃</span>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- 중앙 피드 -->
+    <main class="feed">
+        <!-- 게시물 1 -->
+        <div class="post">
+            <div class="post-header">
+                <div class="profile-pic">김</div>
+                <div class="user-info">
+                    <div class="name">kim_developer</div>
+                    <div class="time">2시간 전</div>
+                </div>
+            </div>
+            <div class="post-image">📸</div>
+            <div class="post-actions">
+                <button class="action-btn" onclick="toggleLike(this)">♡</button>
+                <button class="action-btn">💬</button>
+                <button class="action-btn">📤</button>
+                <div class="spacer"></div>
+                <button class="action-btn">🔖</button>
+            </div>
+            <div class="post-likes">좋아요 1,234개</div>
+            <div class="post-content">
+                <span class="name">kim_developer</span>
+                <span class="post-text">오늘도 코딩 열심히! 🔥 새로운 프로젝트 시작했어요 #개발자 #코딩</span>
+            </div>
+            <div class="view-comments">댓글 42개 모두 보기</div>
+            <div class="add-comment">
+                <input type="text" class="comment-input" placeholder="댓글 달기...">
+                <button class="post-btn">게시</button>
+            </div>
+        </div>
+
+        <!-- 게시물 2 -->
+        <div class="post">
+            <div class="post-header">
+                <div class="profile-pic">박</div>
+                <div class="user-info">
+                    <div class="name">park_designer</div>
+                    <div class="time">5시간 전</div>
+                </div>
+            </div>
+            <div class="post-image">🎨</div>
+            <div class="post-actions">
+                <button class="action-btn" onclick="toggleLike(this)">♡</button>
+                <button class="action-btn">💬</button>
+                <button class="action-btn">📤</button>
+                <div class="spacer"></div>
+                <button class="action-btn">🔖</button>
+            </div>
+            <div class="post-likes">좋아요 856개</div>
+            <div class="post-content">
+                <span class="name">park_designer</span>
+                <span class="post-text">새로운 디자인 작업 완료! 어떻게 생각하시나요? ✨</span>
+            </div>
+            <div class="view-comments">댓글 28개 모두 보기</div>
+            <div class="add-comment">
+                <input type="text" class="comment-input" placeholder="댓글 달기...">
+                <button class="post-btn">게시</button>
+            </div>
+        </div>
+
+        <!-- 게시물 3 -->
+        <div class="post">
+            <div class="post-header">
+                <div class="profile-pic">이</div>
+                <div class="user-info">
+                    <div class="name">lee_traveler</div>
+                    <div class="time">1일 전</div>
+                </div>
+            </div>
+            <div class="post-image">🌍</div>
+            <div class="post-actions">
+                <button class="action-btn" onclick="toggleLike(this)">♡</button>
+                <button class="action-btn">💬</button>
+                <button class="action-btn">📤</button>
+                <div class="spacer"></div>
+                <button class="action-btn">🔖</button>
+            </div>
+            <div class="post-likes">좋아요 2,103개</div>
+            <div class="post-content">
+                <span class="name">lee_traveler</span>
+                <span class="post-text">제주도 여행 중! 날씨가 너무 좋아요 🌊☀️ #제주도 #여행</span>
+            </div>
+            <div class="view-comments">댓글 67개 모두 보기</div>
+            <div class="add-comment">
+                <input type="text" class="comment-input" placeholder="댓글 달기...">
+                <button class="post-btn">게시</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 오른쪽 사이드바 -->
+    <aside class="right-sidebar">
+        <div class="suggestions">
+            <div class="suggestions-header">회원님을 위한 추천</div>
+            <div class="suggestion-item">
+                <div class="suggestion-pic">최</div>
+                <div class="suggestion-info">
+                    <div class="suggestion-name">choi_photo</div>
+                    <div class="suggestion-meta">팔로워 342명</div>
+                </div>
+                <button class="follow-btn">팔로우</button>
+            </div>
+            <div class="suggestion-item">
+                <div class="suggestion-pic">정</div>
+                <div class="suggestion-info">
+                    <div class="suggestion-name">jung_music</div>
+                    <div class="suggestion-meta">팔로워 521명</div>
+                </div>
+                <button class="follow-btn">팔로우</button>
+            </div>
+            <div class="suggestion-item">
+                <div class="suggestion-pic">강</div>
+                <div class="suggestion-info">
+                    <div class="suggestion-name">kang_fitness</div>
+                    <div class="suggestion-meta">팔로워 1.2K명</div>
+                </div>
+                <button class="follow-btn">팔로우</button>
+            </div>
+            <div class="suggestion-item">
+                <div class="suggestion-pic">윤</div>
+                <div class="suggestion-info">
+                    <div class="suggestion-name">yoon_food</div>
+                    <div class="suggestion-meta">팔로워 856명</div>
+                </div>
+                <button class="follow-btn">팔로우</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-links">
+                <a href="#" class="footer-link">소개</a>
+                <a href="#" class="footer-link">도움말</a>
+                <a href="#" class="footer-link">API</a>
+                <a href="#" class="footer-link">개인정보처리방침</a>
+                <a href="#" class="footer-link">약관</a>
+            </div>
+            <div>© 2025 Blink from 취준생</div>
+        </div>
+    </aside>
+</div>
+
+<!-- 새 게시물 작성 플로팅 버튼 -->
+<button class="create-post-btn" onclick="createPost()">+</button>
+
+<script>
+    function toggleLike(btn) {
+        btn.classList.toggle('liked');
+        if (btn.classList.contains('liked')) {
+            btn.textContent = '♥';
+        } else {
+            btn.textContent = '♡';
+        }
+    }
+
+    function createPost() {
+        alert('새 게시물 작성 페이지로 이동합니다!');
+    }
+
+    function logout() {
+        if (confirm('로그아웃 하시겠습니까?')) {
+            document.getElementById('logoutForm').submit();
+        }
+    }
+</script>
 </body>
 </html>
