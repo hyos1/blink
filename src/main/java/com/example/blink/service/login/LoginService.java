@@ -5,10 +5,12 @@ import com.example.blink.repository.MemberRepository;
 import com.example.blink.service.login.request.LoginCommand;
 import com.example.blink.service.login.response.LoginMember;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class LoginService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다,"));
 
         if (!passwordEncoder.matches(loginCommand.getPassword(), member.getPassword())) {
+            log.info("비밀번호 오류");
             throw new IllegalArgumentException("비밀번호가 맞지 않습니다.");
         }
 
