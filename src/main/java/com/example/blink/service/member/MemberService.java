@@ -22,4 +22,10 @@ public class MemberService {
         Member member = new Member(signupCommand.getName(), signupCommand.getEmail(), encodedPassword);
         memberRepository.save(member);
     }
+
+    public MemberSidebarDto getMyProfile(Long loginMemberId) {
+        return memberRepository.findSidebarInfoById(loginMemberId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
+    }
+
 }
