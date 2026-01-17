@@ -1,7 +1,7 @@
 package com.example.blink.web;
 
 import com.example.blink.service.login.response.LoginMember;
-import com.example.blink.service.member.MemberSidebarDto;
+import com.example.blink.service.member.response.MemberSidebarDto;
 import com.example.blink.service.member.MemberService;
 import com.example.blink.web.dto.LoginForm;
 import com.example.blink.web.session.SessionConst;
@@ -32,7 +32,7 @@ public class HomeController {
         // 로그인 성공 후 로직
 
         // 왼쪽 사이드바: 내 프로필 정보
-        MemberSidebarDto myProfile = memberService.getMyProfile(loginMember.getId());
+        MemberSidebarDto myProfile = memberService.getMemberSidebarDto(loginMember.getId());
         model.addAttribute("myProfile", myProfile);
 
         return "feed";

@@ -59,4 +59,23 @@ public class MemberController {
         model.addAttribute("posts", posts);
         return "members/memberProfile";
     }
+
+    // 회원 프로필 페이지
+    @GetMapping("/profile/{username}")
+    public String profile(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
+                          @PathVariable("username") String username, Model model) {
+
+        // username으로 memberId 조회
+        Long targetMemberId = memberService.getMemberIdByUsername(username);
+
+        // 프로필 조회
+        MemberProfileDto profile = memberService.getProfile(targetMemberId, loginMember.getId());
+        model.addAttribute("profile", profile);
+
+        // 프로필 게시물 목록 조회
+        List<ProfilePostDto> posts = postService.getPostsByMemberId(targetMemberId);
+        model.addAttribute("posts", posts);
+
+        return "members/memberProfile";
+    }
 }
