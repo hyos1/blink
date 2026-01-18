@@ -1,4 +1,4 @@
-package com.example.blink.service.member;
+package com.example.blink.service.member.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

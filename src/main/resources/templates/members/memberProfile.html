@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blink - 프로필</title>
+
+    <!-- 공통 스타일 포함 -->
+    <th:block th:replace="~{fragments/styles :: common-styles}"></th:block>
+
     <style>
         * {
             margin: 0;
@@ -83,15 +87,9 @@
             width: 150px;
             height: 150px;
             border-radius: 50%;
-            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 60px;
-            font-weight: bold;
             cursor: pointer;
             transition: transform 0.2s;
+            overflow: hidden;
         }
 
         .profile-pic-large:hover {
@@ -167,13 +165,6 @@
             max-width: 500px;
         }
 
-<!--        .profile-name {-->
-<!--            font-weight: 600;-->
-<!--            font-size: 14px;-->
-<!--            color: #262626;-->
-<!--            margin-bottom: 4px;-->
-<!--        }-->
-
         .profile-description {
             font-size: 14px;
             color: #262626;
@@ -231,18 +222,6 @@
             cursor: pointer;
             overflow: hidden;
             border-radius: 4px;
-        }
-
-        .post-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 48px;
         }
 
         .post-overlay {
@@ -323,6 +302,9 @@
             .profile-pic-large {
                 width: 100px;
                 height: 100px;
+            }
+
+            .profile-pic-large .profile-pic-default {
                 font-size: 40px;
             }
 
@@ -390,10 +372,11 @@
             </div>
 
             <div class="profile-bio">
-<!--                <div class="profile-name">홍길동</div>-->
+                <!--                <div class="profile-name">홍길동</div>-->
                 <div class="profile-description" th:text="*{bio}">안녕하세요! 개발자 홍길동입니다 😊
                     코딩과 여행을 좋아합니다.
-                    📍 서울, 대한민국</div>
+                    📍 서울, 대한민국
+                </div>
             </div>
         </div>
     </div>
@@ -416,101 +399,51 @@
 
     <!-- 게시물 탭 -->
     <div id="postsTab" class="tab-content">
+
         <!-- 게시물이 있을 때 -->
-        <div class="posts-grid">
-            <div class="post-item">
-                <div class="post-image">📸</div>
-                <div class="post-overlay">
-                    <div class="post-stat">
-                        <span>❤️</span>
-                        <span>1,234</span>
-                    </div>
-                    <div class="post-stat">
-                        <span>💬</span>
-                        <span>56</span>
-                    </div>
-                </div>
-            </div>
+        <div class="posts-grid" th:unless="${#lists.isEmpty(posts)}">
+            <div th:each="post : ${posts}" class="post-item"
+                 th:onclick="|location.href='/posts/${post.id}'|">
 
-            <div class="post-item">
-                <div class="post-image">🎨</div>
-                <div class="post-overlay">
-                    <div class="post-stat">
-                        <span>❤️</span>
-                        <span>856</span>
-                    </div>
-                    <div class="post-stat">
-                        <span>💬</span>
-                        <span>42</span>
-                    </div>
-                </div>
-            </div>
+                <!--이미지 있으면 표시-->
+                <img th:if="post.imageUrl != null"
+                     th:src="${post.imageUrl}" alt="게시물 이미지" class="post-image-img">
 
-            <div class="post-item">
-                <div class="post-image">🌍</div>
-                <div class="post-overlay">
-                    <div class="post-stat">
-                        <span>❤️</span>
-                        <span>2,103</span>
-                    </div>
-                    <div class="post-stat">
-                        <span>💬</span>
-                        <span>89</span>
-                    </div>
+                <!--이미지 없으면 기본 아이콘 표시-->
+                <div th:unless="${post.imageUrl != null}" class="post-image-default">
+                    📸
                 </div>
-            </div>
 
-            <div class="post-item">
-                <div class="post-image">☕</div>
                 <div class="post-overlay">
                     <div class="post-stat">
                         <span>❤️</span>
-                        <span>943</span>
+                        <span th:text="${post.likeCount}">1,234</span>
                     </div>
                     <div class="post-stat">
                         <span>💬</span>
-                        <span>31</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="post-item">
-                <div class="post-image">🍕</div>
-                <div class="post-overlay">
-                    <div class="post-stat">
-                        <span>❤️</span>
-                        <span>1,567</span>
-                    </div>
-                    <div class="post-stat">
-                        <span>💬</span>
-                        <span>78</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="post-item">
-                <div class="post-image">🎮</div>
-                <div class="post-overlay">
-                    <div class="post-stat">
-                        <span>❤️</span>
-                        <span>2,345</span>
-                    </div>
-                    <div class="post-stat">
-                        <span>💬</span>
-                        <span>123</span>
+                        <span th:text="${post.commentCount}">56</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 게시물이 없을 때 (위 posts-grid 주석 처리하고 아래 주석 해제)
-        <div class="empty-state">
+        <!-- 게시물이 없을 때 -->
+        <div th:if="${#lists.isEmpty(posts)}" class="empty-state">
             <div class="empty-icon">📷</div>
             <div class="empty-title">게시물 없음</div>
-            <div class="empty-description">게시물을 공유하면 회원님의 프로필에 표시됩니다.</div>
-            <button class="empty-btn" onclick="alert('새 게시물 작성')">첫 게시물 공유하기</button>
+            <div class="empty-description">
+                <span th:if="${profile.isMyProfile}">
+                    게시물을 공유하면 회원님의 프로필에 표시됩니다.
+                </span>
+                <span th:unless="${profile.isMyProfile}">
+                    아직 게시물이 없습니다.
+                </span>
+            </div>
+            <button th:if="${profile.isMyProfile}"
+                    class="empty-btn" onclick="alert('새 게시물 작성')">
+                첫 게시물 공유하기
+            </button>
         </div>
-        -->
     </div>
 
     <!-- 저장됨 탭 -->
@@ -553,16 +486,6 @@
             document.getElementById('savedTab').style.display = 'block';
         } else if (tabName === 'tagged') {
             document.getElementById('taggedTab').style.display = 'block';
-        }
-    }
-
-    function toggleFollow(btn) {
-        if (btn.classList.contains('following')) {
-            btn.classList.remove('following');
-            btn.textContent = '팔로우';
-        } else {
-            btn.classList.add('following');
-            btn.textContent = '팔로잉';
         }
     }
 </script>

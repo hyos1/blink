@@ -11,7 +11,7 @@ public class MemberProfileDto {
 
     private Long id;
     private String name;
-//    private String profileImageUrl; // 프로필 이미지
+    private String profileImageUrl; // 프로필 이미지
     private String bio; // 프로필 한 줄 소개
 
     private Long postCount;
@@ -30,12 +30,10 @@ public class MemberProfileDto {
     }
 
     // JPQL로 기본 정보만 받는 생성자
-    public MemberProfileDto(Long id, String name, String bio, Long postCount, Long followerCount, Long followingCount) {
+    public MemberProfileDto(Long id, String name, String profileImageUrl, String bio) {
         this.id = id;
         this.name = name;
+        this.profileImageUrl = profileImageUrl;
         this.bio = bio;
-        this.postCount = postCount;
-        this.followerCount = followerCount;
-        this.followingCount = followingCount;
     }
 }
