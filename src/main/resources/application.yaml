@@ -13,6 +13,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+#        default_batch_fetch_size: 100
 
   # 콘솔 창 색상 설정
   output:
