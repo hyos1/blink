@@ -22,18 +22,42 @@ public class MemberService {
     private final PostRepository postRepository;
     private final FollowRepository followRepository;
 
+    // 이름으로 memberId 조회
+    public Long getMemberIdByName(String name) {
+        return memberRepository.findIdByName(name).orElseThrow(
+                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
+        );
+    }
+
+    public String getMemberNameById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."))
+                .getName();
+    }
+
     @Transactional
     public void save(SignupCommand signupCommand) {
+
+        if (memberRepository.existsByName(signupCommand.getName())) {
+            throw new IllegalStateException("사용 중인 이름입니다.");
+        }
+
+        if (memberRepository.existsByEmail(signupCommand.getEmail())) {
+            throw new IllegalStateException("사용 중인 이메일입니다.");
+        }
+
         String encodedPassword = passwordEncoder.encode(signupCommand.getPassword());
         Member member = new Member(signupCommand.getName(), signupCommand.getEmail(), encodedPassword);
         memberRepository.save(member);
     }
 
+    // 피드 화면 사이드에 회원 정보 조회
     public MemberSidebarDto getMemberSidebarDto(Long loginMemberId) {
         return memberRepository.findSidebarInfoById(loginMemberId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
     }
 
+    // 프로필 정보 조회
     public MemberProfileDto getProfile(Long targetMemberId, Long loginMember) {
 
         // 기본 정보 조회
@@ -42,8 +66,8 @@ public class MemberService {
 
         // 게시물 수, 팔로잉 팔로워 수 설정
         profile.setPostCount(postRepository.countPostsByMemberId(targetMemberId));
-        profile.setFollowerCount(followRepository.countFollowersByMemberId(targetMemberId));
-        profile.setFollowingCount(followRepository.countFollowingsByMemberId(targetMemberId));
+        profile.setFollowerCount(followRepository.countByFollowingId(targetMemberId));
+        profile.setFollowingCount(followRepository.countByFollowerId(targetMemberId));
 
         // 요청한 사람과 해당 회원 ID가 같은 경우 = 내 프로필
         profile.setMyProfile(targetMemberId.equals(loginMember));
@@ -56,11 +80,5 @@ public class MemberService {
         }
 
         return profile;
-    }
-
-    public Long getMemberIdByUsername(String username) {
-        return memberRepository.findIdByName(username).orElseThrow(
-                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
-        );
     }
 }

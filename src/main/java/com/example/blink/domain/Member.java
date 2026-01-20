@@ -21,7 +21,7 @@ public class Member extends BaseEntity {
     @Column(name = "member_id")
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @Column(unique = true, nullable = false, length = 50)
     private String name;
 
     @Column(unique = true, nullable = false, length = 100)
@@ -30,7 +30,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    private String profileImage; //
+    private String profileImage; // 프로필 이미지
 
     private String bio; // 프로필 한 줄 소개
 

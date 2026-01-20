@@ -61,12 +61,12 @@ public class MemberController {
     }
 
     // 회원 프로필 페이지
-    @GetMapping("/profile/{username}")
+    @GetMapping("/profile/{name}")
     public String profile(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
-                          @PathVariable("username") String username, Model model) {
+                          @PathVariable("name") String name, Model model) {
 
         // username으로 memberId 조회
-        Long targetMemberId = memberService.getMemberIdByUsername(username);
+        Long targetMemberId = memberService.getMemberIdByName(name);
 
         // 프로필 조회
         MemberProfileDto profile = memberService.getProfile(targetMemberId, loginMember.getId());
