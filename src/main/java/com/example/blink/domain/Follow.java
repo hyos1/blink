@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "follows")
+@Table(name = "follows",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"follower_id", "following_id"}))
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Follow {
@@ -45,19 +46,33 @@ public class Follow {
         // 팔로우 당한 사람은 영희
         this.following = following;
         // 영희의 followers 리스트에 이 Follow 추가
-        follower.getFollowers().add(this);
+        following.getFollowers().add(this);
     }
 
     // 생성 메서드
     public static Follow createFollow(Member follower, Member following) {
-        if (follower.getId().equals(following.getId())) {
-            throw new IllegalStateException("자기 자신을 팔로우할 수 없습니다.");
-        }
+        validateFollow(follower, following);
 
         Follow follow = new Follow();
         follow.followedBy(follower);
         follow.follow(following);
 
         return follow;
+    }
+
+    // 검증 메서드
+    private static void validateFollow(Member follower, Member following) {
+        if (follower.getId().equals(following.getId())) {
+            throw new IllegalStateException("자기 자신을 팔로우할 수 없습니다.");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Follow{" +
+                "id=" + id +
+                ", follower=" + follower.getId() +
+                ", following=" + following.getId() +
+                '}';
     }
 }
