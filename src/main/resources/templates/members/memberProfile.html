@@ -425,7 +425,7 @@
 
                 <!--이미지 있으면 표시-->
                 <img th:if="post.imageUrl != null"
-                     th:src="${post.imageUrl}" alt="게시물 이미지" class="post-image-img">
+                     th:src="@{${post.imageUrl}}" alt="게시물 이미지" class="post-image-img">
 
                 <!--이미지 없으면 기본 아이콘 표시-->
                 <div th:unless="${post.imageUrl != null}" class="post-image-default">
@@ -458,7 +458,8 @@
                 </span>
             </div>
             <button th:if="${profile.isMyProfile}"
-                    class="empty-btn" onclick="alert('새 게시물 작성')">
+                    th:onclick="|location.href='@{/posts/add}'|"
+                    class="empty-btn">
                 첫 게시물 공유하기
             </button>
         </div>
