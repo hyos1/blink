@@ -1,0 +1,16 @@
+package com.example.blink.service.post.request;
+
+import com.example.blink.file.request.UploadFile;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.util.List;
+
+@Getter
+@AllArgsConstructor
+public class CreatePostCommand {
+
+    private Long memberId;
+    private String content;
+    private List<UploadFile> images;
+}
