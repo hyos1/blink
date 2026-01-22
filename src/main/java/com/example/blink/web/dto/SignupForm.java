@@ -8,7 +8,6 @@ import lombok.*;
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 public class SignupForm {
 
     @NotBlank(message = "아이디를 입력해주세요")
