@@ -1,5 +1,6 @@
 package com.example.blink.domain;
 
+import com.example.blink.file.request.UploadFile;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -39,10 +40,22 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostLike> postLikes = new ArrayList<>();
 
-    public Post(String content, Member member) {
+    private Post(String content, Member member) {
         this.content = content;
         // Member - Post 편의 메서드
         writtenBy(member);
+    }
+
+    // 정적 팩토리 메서드
+    public static Post createPost(String content, Member member, List<UploadFile> images) {
+
+        Post post = new Post(content, member);
+        int orderNum = 0;
+        for (UploadFile image : images) {
+            PostImage postImage = new PostImage(image.getImageUrl(), orderNum++);
+            post.addImage(postImage);
+        }
+        return post;
     }
 
     // 편의 메서드
