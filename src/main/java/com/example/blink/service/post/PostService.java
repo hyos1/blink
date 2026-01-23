@@ -30,7 +30,7 @@ public class PostService {
 
         // 이미지 추가
         List<UploadFile> images = command.getImages();
-        Post post = Post.createPost(command.getContent(), member, images);
+        Post post = Post.createPost(command.getContent(), member, images); //객체 내부에서 검증
 
         postRepository.save(post);
         return post.getId();

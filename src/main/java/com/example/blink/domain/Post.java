@@ -49,7 +49,13 @@ public class Post extends BaseEntity {
     // 정적 팩토리 메서드
     public static Post createPost(String content, Member member, List<UploadFile> images) {
 
+        //검증 로직
+        validationContent(content);
+        validationImage(images);
+
         Post post = new Post(content, member);
+
+        // 이미지 추가
         int orderNum = 0;
         for (UploadFile image : images) {
             PostImage postImage = new PostImage(image.getImageUrl(), orderNum++);
@@ -60,12 +66,12 @@ public class Post extends BaseEntity {
 
     // 편의 메서드
 
-    public void writtenBy(Member member) {
+    private void writtenBy(Member member) {
         this.member = member;
         member.getPosts().add(this);
     }
 
-    public void addImage(PostImage image) {
+    private void addImage(PostImage image) {
         images.add(image);
         image.attachTo(this);
     }
@@ -73,5 +79,25 @@ public class Post extends BaseEntity {
     public void addLike(PostLike like) {
         postLikes.add(like);
         like.attachTo(this);
+    }
+
+    // 검증 로직
+    private static void validationContent(String content) {
+        if (content == null || content.trim().isEmpty()) {
+            throw new IllegalArgumentException("게시물 내용은 필수입니다.");
+        }
+        if (content.length() > 1000) {
+            throw new IllegalArgumentException("게시물 내용은 1000자를 초과할 수 없습니다.");
+        }
+    }
+
+    private static void validationImage(List<UploadFile> uploadFiles) {
+        if (uploadFiles == null || uploadFiles.isEmpty()) {
+            throw new IllegalStateException("사진은 최소 1장 필요합니다.");
+        } else {
+            if (uploadFiles.size() > 3) {
+                throw new IllegalArgumentException("사진은 최대 3장까지 업로드 가능합니다.");
+            }
+        }
     }
 }
