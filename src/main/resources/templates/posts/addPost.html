@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blink - 새 게시물</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #fafafa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .create-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            overflow: hidden;
+        }
+
+        .create-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .create-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #262626;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #8e8e8e;
+        }
+
+        .create-body {
+            padding: 40px;
+        }
+
+        .upload-area {
+            border: 2px dashed #dbdbdb;
+            border-radius: 8px;
+            padding: 60px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .upload-area:hover {
+            background: #fafafa;
+        }
+
+        .upload-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            font-size: 20px;
+            color: #262626;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtext {
+            font-size: 14px;
+            color: #8e8e8e;
+        }
+
+        .upload-btn {
+            margin-top: 20px;
+            padding: 10px 24px;
+            background: #0095f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .upload-btn:hover {
+            background: #1877f2;
+        }
+
+        .preview-area {
+            display: none;
+        }
+
+        .preview-area.active {
+            display: block;
+        }
+
+        /* 썸네일 순서 변경 */
+        .thumbnails {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding: 8px 0;
+        }
+
+        .thumbnail {
+            min-width: 80px;
+            height: 80px;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: move;
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .thumbnail.active {
+            border-color: #0095f6;
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thumbnail-order {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* 이미지 슬라이더 */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            max-height: 400px;
+            overflow: hidden;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background: #000;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+
+        .slider-image {
+            min-width: 100%;
+            height: 400px;
+            object-fit: contain;
+        }
+
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: none;
+            z-index: 10;
+        }
+
+        .slider-btn.show {
+            display: block;
+        }
+
+        .slider-btn:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .slider-btn-prev {
+            left: 10px;
+        }
+
+        .slider-btn-next {
+            right: 10px;
+        }
+
+        .slider-indicator {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: #8e8e8e;
+        }
+
+        .caption-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dbdbdb;
+            border-radius: 8px;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 100px;
+            outline: none;
+        }
+
+        .caption-input:focus {
+            border-color: #0095f6;
+        }
+
+        .create-footer {
+            padding: 16px 20px;
+            border-top: 1px solid #dbdbdb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-cancel {
+            background: #efefef;
+            color: #262626;
+        }
+
+        .btn-submit {
+            background: #0095f6;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background: #1877f2;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .dragging {
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+<div class="create-container">
+    <div class="create-header">
+        <div class="create-title">새 게시물 만들기</div>
+        <button class="close-btn" th:onclick="|location.href='/members/profile/me'|">&times;</button>
+    </div>
+
+    <form th:action="@{/posts/add}" th:object="${createPostForm}" method="post" enctype="multipart/form-data" id="postForm">
+        <div class="create-body">
+
+            <!-- 에러 메시지 -->
+            <div th:if="${#fields.hasGlobalErrors()}" class="error-message">
+                <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+            </div>
+
+            <!-- 업로드 영역 -->
+            <div id="uploadArea" class="upload-area" onclick="document.getElementById('fileInput').click()">
+                <div class="upload-icon">📸</div>
+                <div class="upload-text">사진을 여기에 끌어다 놓으세요</div>
+                <div class="upload-subtext">최대 3장까지 업로드 가능</div>
+                <button type="button" class="upload-btn">컴퓨터에서 선택</button>
+            </div>
+
+            <input type="file"
+                   id="fileInput"
+                   name="imageFiles"
+                   accept="image/*"
+                   multiple
+                   onchange="handleFileSelect(event)">
+
+            <!-- 미리보기 영역 -->
+            <div id="previewArea" class="preview-area">
+                <!-- 썸네일 순서 변경 -->
+                <div id="thumbnails" class="thumbnails"></div>
+
+                <div class="slider-indicator" id="sliderIndicator"></div>
+                <div class="slider-container">
+                    <div id="sliderWrapper" class="slider-wrapper"></div>
+                    <button type="button" class="slider-btn slider-btn-prev" id="prevBtn" onclick="moveSlide(-1)">‹</button>
+                    <button type="button" class="slider-btn slider-btn-next" id="nextBtn" onclick="moveSlide(1)">›</button>
+                </div>
+
+                <textarea name="content"
+                          class="caption-input"
+                          placeholder="문구를 입력하세요..."
+                          maxlength="2200"></textarea>
+            </div>
+        </div>
+
+        <div class="create-footer">
+            <button type="button" class="btn btn-cancel" th:onclick="|location.href='/members/profile/me'|">취소</button>
+            <button type="submit" class="btn btn-submit" id="submitBtn" disabled>공유하기</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const uploadArea = document.getElementById('uploadArea');
+    const previewArea = document.getElementById('previewArea');
+    const sliderWrapper = document.getElementById('sliderWrapper');
+    const sliderIndicator = document.getElementById('sliderIndicator');
+    const thumbnails = document.getElementById('thumbnails');
+    const submitBtn = document.getElementById('submitBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const postForm = document.getElementById('postForm');
+
+    let currentIndex = 0;
+    let imageFiles = [];  // File 객체 배열 (순서 유지)
+    let imageDataUrls = [];  // 이미지 데이터 URL 배열
+
+    // 순서 보장을 위한 파일 읽기
+    function readFileAsDataURL(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // 파일 선택
+    async function handleFileSelect(event) {
+        const files = Array.from(event.target.files).slice(0, 3); // 최대 3장
+        if (files.length === 0) return;
+
+        // 이미지 파일만 필터링
+        const validFiles = files.filter(file => file.type.startsWith('image/'));
+        if (validFiles.length === 0) {
+            alert('이미지 파일만 업로드 가능합니다.');
+            return;
+        }
+
+        if (validFiles.length !== files.length) {
+            alert('이미지 파일만 선택되었습니다.');
+        }
+
+        try {
+            // 파일 읽기
+            const dataUrls = await Promise.all(validFiles.map(file => readFileAsDataURL(file)));
+
+            imageFiles = validFiles;
+            imageDataUrls = dataUrls;
+            currentIndex = 0;
+
+            renderImages();
+            renderThumbnails();
+
+            uploadArea.style.display = 'none';
+            previewArea.classList.add('active');
+            submitBtn.disabled = false;
+
+        } catch (error) {
+            console.error('파일 읽기 실패:', error);
+            alert('파일을 읽는 중 오류가 발생했습니다.');
+        }
+    }
+
+    // 이미지 렌더링
+    function renderImages() {
+        sliderWrapper.innerHTML = '';
+        imageDataUrls.forEach((dataUrl) => {
+            const img = document.createElement('img');
+            img.src = dataUrl;
+            img.className = 'slider-image';
+            sliderWrapper.appendChild(img);
+        });
+        updateSlider();
+    }
+
+    // 썸네일 렌더링
+    function renderThumbnails() {
+        thumbnails.innerHTML = '';
+        imageDataUrls.forEach((dataUrl, index) => {
+            const thumbnail = document.createElement('div');
+            thumbnail.className = 'thumbnail' + (index === currentIndex ? ' active' : '');
+            thumbnail.draggable = true;
+            thumbnail.dataset.index = index;
+            thumbnail.onclick = () => {
+                currentIndex = index;
+                updateSlider();
+                renderThumbnails();
+            };
+
+            // 드래그 이벤트
+            thumbnail.ondragstart = handleDragStart;
+            thumbnail.ondragover = handleDragOver;
+            thumbnail.ondrop = handleDrop;
+            thumbnail.ondragend = handleDragEnd;
+
+            const img = document.createElement('img');
+            img.src = dataUrl;
+
+            const orderBadge = document.createElement('div');
+            orderBadge.className = 'thumbnail-order';
+            orderBadge.textContent = index + 1;
+
+            thumbnail.appendChild(img);
+            thumbnail.appendChild(orderBadge);
+            thumbnails.appendChild(thumbnail);
+        });
+    }
+
+    // 드래그 앤 드롭으로 순서 변경
+    let draggedIndex = null;
+
+    function handleDragStart(e) {
+        draggedIndex = parseInt(e.currentTarget.dataset.index);
+        e.currentTarget.classList.add('dragging');
+    }
+
+    function handleDragOver(e) {
+        e.preventDefault();
+    }
+
+    function handleDrop(e) {
+        e.preventDefault();
+        const dropIndex = parseInt(e.currentTarget.dataset.index);
+
+        if (draggedIndex !== dropIndex) {
+            // 배열 순서 변경
+            const [draggedFile] = imageFiles.splice(draggedIndex, 1);
+            const [draggedDataUrl] = imageDataUrls.splice(draggedIndex, 1);
+
+            imageFiles.splice(dropIndex, 0, draggedFile);
+            imageDataUrls.splice(dropIndex, 0, draggedDataUrl);
+
+            // 현재 인덱스 조정
+            if (currentIndex === draggedIndex) {
+                currentIndex = dropIndex;
+            } else if (draggedIndex < currentIndex && dropIndex >= currentIndex) {
+                currentIndex--;
+            } else if (draggedIndex > currentIndex && dropIndex <= currentIndex) {
+                currentIndex++;
+            }
+
+            renderImages();
+            renderThumbnails();
+        }
+    }
+
+    function handleDragEnd(e) {
+        e.currentTarget.classList.remove('dragging');
+    }
+
+    // 슬라이더 이동
+    function moveSlide(direction) {
+        currentIndex += direction;
+        if (currentIndex < 0) currentIndex = 0;
+        if (currentIndex >= imageFiles.length) currentIndex = imageFiles.length - 1;
+        updateSlider();
+        renderThumbnails();
+    }
+
+    // 슬라이더 업데이트
+    function updateSlider() {
+        sliderWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+        sliderIndicator.textContent = imageFiles.length > 1 ? `${currentIndex + 1} / ${imageFiles.length}` : '';
+
+        if (imageFiles.length > 1) {
+            prevBtn.classList.toggle('show', currentIndex > 0);
+            nextBtn.classList.toggle('show', currentIndex < imageFiles.length - 1);
+        }
+    }
+
+    // 폼 제출 시 순서대로 파일 재설정
+    postForm.onsubmit = function() {
+        const dataTransfer = new DataTransfer();
+        imageFiles.forEach(file => dataTransfer.items.add(file));
+        document.getElementById('fileInput').files = dataTransfer.files;
+        return true;
+    };
+</script>
+</body>
+</html>
