@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url:  jdbc:h2:tcp://localhost/~/blink
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+file:
+  dir: C:\\Users\\hyozz\\study\\blink\\postImage\\
