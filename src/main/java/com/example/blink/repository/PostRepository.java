@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
@@ -30,4 +31,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "where p.member.id = :memberId " +
             "order by p.createdAt desc")
     List<ProfilePostDto> findProfilePostsByMemberId(@Param("memberId") Long memberId);
+
+    // 게시물 상세 조회 (작성자 정보 포함)
+    @Query("select p from Post p " +
+            "join fetch p.member " +
+            "where p.id = :postId")
+    Optional<Post> findByIdWithMember(@Param("postId") Long postId);
 }
