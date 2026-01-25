@@ -34,7 +34,7 @@ public class Follow {
     // 편의 메서드
 
     // 팔로우 한 사람(ex 철수)
-    public void followedBy(Member follower) {
+    private void followedBy(Member follower) {
         // 이 팔로우는 철수가 했다.
         this.follower = follower;
         // 철수의 Followings 리스트에 이 Follow 추가
@@ -42,7 +42,7 @@ public class Follow {
     }
 
     // 팔로우 받은 사람(ex 영희)
-    public void follow(Member following) {
+    private void follow(Member following) {
         // 팔로우 당한 사람은 영희
         this.following = following;
         // 영희의 followers 리스트에 이 Follow 추가
