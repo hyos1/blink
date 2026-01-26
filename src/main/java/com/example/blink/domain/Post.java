@@ -84,7 +84,6 @@ public class Post extends BaseEntity {
     public void addComment(Comment comment) {
         comments.add(comment);
         comment.attachTo(this);
-        comment.writtenBy(this.member);
     }
 
     // 검증 로직

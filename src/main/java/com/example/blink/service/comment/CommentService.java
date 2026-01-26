@@ -3,7 +3,6 @@ package com.example.blink.service.comment;
 import com.example.blink.domain.Comment;
 import com.example.blink.domain.Member;
 import com.example.blink.domain.Post;
-import com.example.blink.repository.CommentRepository;
 import com.example.blink.repository.MemberRepository;
 import com.example.blink.repository.PostRepository;
 import com.example.blink.web.dto.response.CommentResponseDto;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CommentService {
 
-    private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
 
@@ -29,8 +27,9 @@ public class CommentService {
                 () -> new IllegalArgumentException("존재하지 않는 회원입니다.")
         );
 
-        Comment comment = Comment.createComment(content, post, member);
-        commentRepository.save(comment);
+        Comment comment = Comment.createComment(content, member);
+        // Post CascadeType 의하여 Comment 저장됨
+        post.addComment(comment);
 
         return new CommentResponseDto(
                 comment.getId(), member.getName(), member.getProfileImage(),

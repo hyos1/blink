@@ -18,15 +18,14 @@ public class Comment extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    private Comment(String content, Post post, Member writer) {
+    private Comment(String content, Member writer) {
         this.content = content;
-        attachTo(post);
         writtenBy(writer);
     }
 
-    public static Comment createComment(String content, Post post, Member writer) {
+    public static Comment createComment(String content, Member writer) {
         validateContent(content);
-        return new Comment(content, post, writer);
+        return new Comment(content, writer);
     }
 
     // 연관관계
