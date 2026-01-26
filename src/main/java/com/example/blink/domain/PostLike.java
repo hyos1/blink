@@ -25,9 +25,21 @@ public class PostLike extends BaseEntity {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
+    private PostLike(Post post, Member member) {
+        attachTo(post);
+        likedBy(member);
+    }
+
+    public static PostLike createPostLike(Post post, Member member) {
+        return new PostLike(post, member);
+    }
+
     // 편의 메서드
     public void attachTo(Post post) {
         this.post = post;
-        this.member = post.getMember();
+    }
+
+    public void likedBy(Member member) {
+        this.member = member;
     }
 }
