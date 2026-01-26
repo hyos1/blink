@@ -21,10 +21,10 @@ public class PostDetailDto {
     private List<String> imageUrls;
     private LocalDateTime createdAt;
 
-    private Long postLikeCount;
+    private Long likeCount;
     private Long commentCount;
 
-    private boolean isLikedByMe; // 내가 좋아요 눌렀는지
+    private boolean likedByMe; // 내가 좋아요 눌렀는지
     private boolean isMyPost; // 내 게시물인지
 
     private List<CommentDto> comments;
