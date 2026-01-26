@@ -41,4 +41,15 @@ public class PostApiController {
         Long likeCount = postService.getLikeCount(postId);
         return new PostLikeResponseDto(likedByMe, likeCount);
     }
+
+    // 게시물에 댓글 추가
+    @PostMapping("/api/posts/{postId}/comments")
+    public CommentResponseDto addComment(
+            @PathVariable Long postId,
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
+            @RequestBody CommentRequestDto commentRequestDto) {
+        // 댓글 dto에서도 검증할지 객체 내부 검증으로 끝낼지 고민(bindingResult)
+        log.info("댓글 ={}", commentRequestDto.getContent());
+        return commentService.addComment(postId, loginMember.getId(), commentRequestDto.getContent());
+    }
 }

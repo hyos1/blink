@@ -81,6 +81,12 @@ public class Post extends BaseEntity {
         like.attachTo(this);
     }
 
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.attachTo(this);
+        comment.writtenBy(this.member);
+    }
+
     // 검증 로직
     private static void validationContent(String content) {
         if (content == null || content.trim().isEmpty()) {
