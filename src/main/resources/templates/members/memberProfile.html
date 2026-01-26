@@ -326,6 +326,339 @@
                 margin: 0 15px;
             }
         }
+
+        /* 게시물, 팔로우, 팔로워 모달 창 스타일 추가 */
+
+        /* 모달 공통 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        /* 게시물 모달 */
+        .post-modal-container {
+            position: relative;
+            background: white;
+            border-radius: 4px;
+            max-width: 90vw;
+            max-height: 90vh;
+            display: flex;
+        }
+
+        .post-modal-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 36px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .post-modal-content {
+            display: flex;
+            width: 100%;
+            max-height: 90vh;
+        }
+
+        .post-modal-image-section {
+            background: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-width: 400px;
+            max-width: 60vw;
+            position: relative;
+        }
+
+        .post-modal-slider {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-slider-wrapper {
+            display: flex;
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+
+        .modal-slider-wrapper img {
+            min-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+
+        .modal-slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            display: none;
+            z-index: 10;
+        }
+
+        .modal-slider-btn.show {
+            display: block;
+        }
+
+        .modal-slider-prev {
+            left: 10px;
+        }
+
+        .modal-slider-next {
+            right: 10px;
+        }
+
+        .modal-slider-indicator {
+            position: absolute;
+            bottom: 10px;
+            color: white;
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .post-modal-info-section {
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            background: white;
+        }
+
+        .post-modal-header {
+            padding: 16px;
+            border-bottom: 1px solid #efefef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .post-modal-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .post-modal-author-pic {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-modal-author-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #262626;
+            cursor: pointer;
+        }
+
+        .post-modal-more {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .post-modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .post-modal-caption {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #efefef;
+        }
+
+        .post-modal-text {
+            font-size: 14px;
+            color: #262626;
+        }
+
+        .post-modal-comments {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .post-modal-footer {
+            border-top: 1px solid #efefef;
+        }
+
+        .post-modal-actions {
+            display: flex;
+            gap: 16px;
+            padding: 12px 16px;
+        }
+
+        .post-modal-action-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .post-modal-likes {
+            padding: 0 16px 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .post-modal-date {
+            padding: 0 16px 12px;
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+
+        .post-modal-comment-input {
+            border-top: 1px solid #efefef;
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .post-modal-comment-input input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .post-modal-post-btn {
+            background: none;
+            border: none;
+            color: #0095f6;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* 팔로우 모달 */
+        .follow-modal-container {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 400px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .follow-modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .follow-modal-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .follow-modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #8e8e8e;
+        }
+
+        .follow-modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .follow-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            gap: 12px;
+        }
+
+        .follow-item:hover {
+            background: #fafafa;
+        }
+
+        .follow-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .follow-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .follow-info {
+            flex: 1;
+        }
+
+        .follow-username {
+            font-weight: 600;
+            font-size: 14px;
+            color: #262626;
+            cursor: pointer;
+        }
+
+        .follow-name {
+            font-size: 14px;
+            color: #8e8e8e;
+        }
+
+        .follow-btn-small {
+            padding: 7px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            background: #0095f6;
+            color: white;
+            cursor: pointer;
+        }
+
+        .follow-btn-small.following {
+            background: #efefef;
+            color: #262626;
+        }
+
+        /* 여기까지 추가 */
     </style>
 </head>
 <body>
@@ -362,31 +695,35 @@
 
                 <!-- 본인 프로필일 때 -->
                 <button th:if="*{isMyProfile}" class="edit-profile-btn"
-                        th:onclick="|location.href='members/profile/edit'|">프로필 편집</button>
+                        th:onclick="|location.href='members/profile/edit'|">프로필 편집
+                </button>
                 <button th:if="*{isMyProfile}" class="icon-btn"
-                        th:onclick="|location.href='/settings'|">⚙️</button>
+                        th:onclick="|location.href='/settings'|">⚙️
+                </button>
 
                 <!-- 다른 사람 프로필일 때 -->
                 <form th:unless="*{isMyProfile}"
                       th:action="@{/follows/{id}(id=*{id})}" method="post"
                       style="display: inline;">
-                <button type="submit" class="follow-btn"
-                        th:classappend="*{isFollowing} ? 'following' : ''"
-                        th:text="*{isFollowing} ? '팔로잉' : '팔로우'"
-                        onclick="toggleFollow(this)">팔로우</button>
+                    <button type="submit" class="follow-btn"
+                            th:classappend="*{isFollowing} ? 'following' : ''"
+                            th:text="*{isFollowing} ? '팔로잉' : '팔로우'"
+                    >팔로우
+                    </button>
                 </form>
-                <button th:unless="*{isMyProfile}" class="icon-btn"
-                        onclick="alert('더보기')">⋯</button>
+                <button th:unless="*{isMyProfile}" class="icon-btn">
+                    ⋯
+                </button>
             </div>
 
             <div class="profile-stats">
                 <div class="stat">
                     게시물 <span class="stat-number" th:text="*{postCount}">42</span>
                 </div>
-                <div class="stat" style="cursor: pointer;" onclick="alert('팔로워 목록')">
+                <div class="stat" style="cursor: pointer;" onclick="openFollowersModal()">
                     팔로워 <span class="stat-number" th:text="*{followerCount}">1,234</span>
                 </div>
-                <div class="stat" style="cursor: pointer;" onclick="alert('팔로잉 목록')">
+                <div class="stat" style="cursor: pointer;" onclick="openFollowingModal()">
                     팔로우 <span class="stat-number" th:text="*{followingCount}">567</span>
                 </div>
             </div>
@@ -421,7 +758,7 @@
         <!-- 게시물이 있을 때 -->
         <div class="posts-grid" th:unless="${#lists.isEmpty(posts)}">
             <div th:each="post : ${posts}" class="post-item"
-                 th:onclick="|location.href='/posts/${post.id}'|">
+                 th:onclick="|openPostModal(${post.id})|">
 
                 <!--이미지 있으면 표시-->
                 <img th:if="post.imageUrl != null"
@@ -486,19 +823,15 @@
 
 <script>
     function showTab(tabName) {
-        // 모든 탭 비활성화
         const tabs = document.querySelectorAll('.tab');
         tabs.forEach(tab => tab.classList.remove('active'));
 
-        // 모든 탭 컨텐츠 숨기기
         document.getElementById('postsTab').style.display = 'none';
         document.getElementById('savedTab').style.display = 'none';
         document.getElementById('taggedTab').style.display = 'none';
 
-        // 선택된 탭 활성화
         event.currentTarget.classList.add('active');
 
-        // 해당 컨텐츠 표시
         if (tabName === 'posts') {
             document.getElementById('postsTab').style.display = 'block';
         } else if (tabName === 'saved') {
@@ -507,6 +840,337 @@
             document.getElementById('taggedTab').style.display = 'block';
         }
     }
+
+    // 게시물 모달 관련
+    let currentPostId = null;
+    let modalCurrentIndex = 0;
+    let modalImageCount = 0;
+    let modalImages = [];
+
+    // 게시물 모달 열기
+    async function openPostModal(postId) {
+        currentPostId = postId;
+
+        try {
+            const response = await fetch(`/api/posts/${postId}`);
+            if (!response.ok) {
+                throw new Error('게시물을 불러올 수 없습니다.');
+            }
+
+            const data = await response.json();
+
+            // 작성자 정보
+            document.getElementById('modalAuthorImage').src = data.authorProfileImage || '/images/default-profile.svg';
+            document.getElementById('modalAuthorName').textContent = data.authorName;
+            document.getElementById('modalCaptionImage').src = data.authorProfileImage || '/images/default-profile.svg';
+            document.getElementById('modalCaptionName').textContent = data.authorName;
+
+            // 게시물 내용
+            document.getElementById('modalContent').textContent = data.content;
+            document.getElementById('modalLikeCount').textContent = data.likeCount;
+            document.getElementById('modalDate').textContent = formatDate(data.createdAt);
+
+            // 이미지 로드
+            modalImages = data.imageUrls;
+            modalImageCount = modalImages.length;
+            modalCurrentIndex = 0;
+
+            const modalSliderWrapper = document.getElementById('modalSliderWrapper');
+            modalSliderWrapper.innerHTML = '';
+            modalImages.forEach(imageUrl => {
+                const img = document.createElement('img');
+                img.src = imageUrl;
+                modalSliderWrapper.appendChild(img);
+            });
+
+            updateModalSlider();
+
+            // 좋아요 버튼 상태
+            const likeBtn = document.querySelector('.post-modal-action-btn');
+            if (data.likedByMe) {
+                likeBtn.textContent = '♥';
+                likeBtn.style.color = '#ed4956';
+            } else {
+                likeBtn.textContent = '♡';
+                likeBtn.style.color = '';
+            }
+
+            // 댓글 로드
+            loadComments(data.comments);
+
+            // 모달 열기
+            document.getElementById('postModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+
+        } catch (error) {
+            console.error('게시물 로딩 실패:', error);
+            alert('게시물을 불러올 수 없습니다.');
+        }
+    }
+
+    // 게시물 모달 닫기
+    function closePostModal(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById('postModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // 모달 슬라이더 이동
+    function moveModalSlide(direction) {
+        modalCurrentIndex += direction;
+        if (modalCurrentIndex < 0) modalCurrentIndex = 0;
+        if (modalCurrentIndex >= modalImageCount) modalCurrentIndex = modalImageCount - 1;
+        updateModalSlider();
+    }
+
+    // 모달 슬라이더 업데이트
+    function updateModalSlider() {
+        const wrapper = document.getElementById('modalSliderWrapper');
+        wrapper.style.transform = `translateX(-${modalCurrentIndex * 100}%)`;
+
+        const indicator = document.getElementById('modalSliderIndicator');
+        indicator.textContent = modalImageCount > 1 ? `${modalCurrentIndex + 1} / ${modalImageCount}` : '';
+
+        const prevBtn = document.getElementById('modalPrevBtn');
+        const nextBtn = document.getElementById('modalNextBtn');
+
+        if (modalImageCount > 1) {
+            prevBtn.classList.toggle('show', modalCurrentIndex > 0);
+            nextBtn.classList.toggle('show', modalCurrentIndex < modalImageCount - 1);
+        }
+    }
+
+    // 댓글 로드
+    function loadComments(comments) {
+        const container = document.getElementById('modalComments');
+
+        if (!comments || comments.length === 0) {
+            container.innerHTML = '';
+            return;
+        }
+
+        container.innerHTML = comments.map(comment => `
+            <div class="post-modal-comment" style="display: flex; gap: 12px;">
+                <img src="${comment.authorProfileImage || '/images/default-profile.svg'}"
+                     class="post-modal-author-pic"
+                     alt="프로필">
+                <div style="flex: 1;">
+                    <span class="post-modal-author-name">${comment.authorName}</span>
+                    <span class="post-modal-text"> ${comment.content}</span>
+                    <div style="font-size: 12px; color: #8e8e8e; margin-top: 4px;">
+                        ${formatDate(comment.createdAt)}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // 날짜 포맷팅
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diff = Math.floor((now - date) / 1000);
+
+        if (diff < 60) return '방금 전';
+        if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
+        if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
+        if (diff < 604800) return `${Math.floor(diff / 86400)}일 전`;
+
+        return date.toLocaleDateString('ko-KR');
+    }
+
+    // 팔로워/팔로잉 모달
+    function openFollowersModal() {
+        document.getElementById('followModalTitle').textContent = '팔로워';
+        document.getElementById('followModalBody').innerHTML = '<div style="padding: 40px; text-align: center; color: #8e8e8e;">팔로워가 없습니다</div>';
+        document.getElementById('followModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function openFollowingModal() {
+        document.getElementById('followModalTitle').textContent = '팔로잉';
+        document.getElementById('followModalBody').innerHTML = '<div style="padding: 40px; text-align: center; color: #8e8e8e;">팔로잉이 없습니다</div>';
+        document.getElementById('followModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeFollowModal(event) {
+        if (event && event.target !== event.currentTarget) return;
+        document.getElementById('followModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // ESC 키로 닫기
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closePostModal();
+            closeFollowModal();
+        }
+    });
+
+        // 좋아요 토글
+    async function togglePostLike() {
+        if (!currentPostId) return;
+
+        try {
+            const response = await fetch(`/api/posts/${currentPostId}/like`, {
+                method: 'POST'
+            });
+
+            if (!response.ok) throw new Error('좋아요 처리 실패');
+
+            const data = await response.json();
+
+            // 좋아요 수 업데이트
+            document.getElementById('modalLikeCount').textContent = data.likeCount;
+
+            // 버튼 상태 변경
+            const likeBtn = document.querySelector('.post-modal-action-btn');
+            if (data.likedByMe) {
+                likeBtn.textContent = '♥';
+                likeBtn.style.color = '#ed4956';
+            } else {
+                likeBtn.textContent = '♡';
+                likeBtn.style.color = '';
+            }
+
+        } catch (error) {
+            console.error('좋아요 실패:', error);
+            alert('좋아요 처리 중 오류가 발생했습니다.');
+        }
+    }
+
+    // 댓글 추가
+    async function addComment() {
+        const input = document.getElementById('commentInput');
+        const content = input.value.trim();
+
+        if (!content || !currentPostId) return;
+
+        try {
+            const response = await fetch(`/api/posts/${currentPostId}/comments`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content: content })
+            });
+
+            if (!response.ok) throw new Error('댓글 작성 실패');
+
+            const newComment = await response.json();
+
+            // 댓글 목록에 추가
+            const container = document.getElementById('modalComments');
+            const commentHtml = `
+                <div class="post-modal-comment" style="display: flex; gap: 12px;">
+                    <img src="${newComment.authorProfileImage || '/images/default-profile.svg'}"
+                         class="post-modal-author-pic"
+                         alt="프로필">
+                    <div style="flex: 1;">
+                        <span class="post-modal-author-name">${newComment.authorName}</span>
+                        <span class="post-modal-text"> ${newComment.content}</span>
+                        <div style="font-size: 12px; color: #8e8e8e; margin-top: 4px;">
+                            방금 전
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', commentHtml);
+
+            // 입력창 초기화
+            input.value = '';
+
+        } catch (error) {
+            console.error('댓글 작성 실패:', error);
+            alert('댓글 작성 중 오류가 발생했습니다.');
+        }
+    }
 </script>
+
+<!--추가된 코드-->
+
+<!-- 게시물 상세 모달 HTML -->
+<div id="postModal" class="modal-overlay" onclick="closePostModal(event)">
+    <div class="post-modal-container" onclick="event.stopPropagation()">
+        <button class="post-modal-close" onclick="closePostModal()">&times;</button>
+
+        <div class="post-modal-content">
+            <!-- 왼쪽: 이미지 -->
+            <div class="post-modal-image-section">
+                <div class="post-modal-slider">
+                    <div id="modalSliderWrapper" class="modal-slider-wrapper"></div>
+                    <button class="modal-slider-btn modal-slider-prev" id="modalPrevBtn" onclick="moveModalSlide(-1)">
+                        ‹
+                    </button>
+                    <button class="modal-slider-btn modal-slider-next" id="modalNextBtn" onclick="moveModalSlide(1)">›
+                    </button>
+                </div>
+                <div id="modalSliderIndicator" class="modal-slider-indicator"></div>
+            </div>
+
+            <!-- 오른쪽: 정보 -->
+            <div class="post-modal-info-section">
+                <div class="post-modal-header">
+                    <div class="post-modal-author">
+                        <img id="modalAuthorImage" class="post-modal-author-pic" src="/images/default-profile.svg"
+                             alt="프로필">
+                        <span id="modalAuthorName" class="post-modal-author-name">작성자</span>
+                    </div>
+                    <button class="post-modal-more">⋯</button>
+                </div>
+
+                <div class="post-modal-body">
+                    <div class="post-modal-caption">
+                        <img id="modalCaptionImage" class="post-modal-author-pic" src="/images/default-profile.svg"
+                             alt="프로필">
+                        <div>
+                            <span id="modalCaptionName" class="post-modal-author-name">작성자</span>
+                            <span id="modalContent" class="post-modal-text">게시물 내용</span>
+                        </div>
+                    </div>
+
+                    <div id="modalComments" class="post-modal-comments"></div>
+                </div>
+
+                <div class="post-modal-footer">
+                    <div class="post-modal-actions">
+                        <button class="post-modal-action-btn" onclick="togglePostLike()">♡</button>
+                        <button class="post-modal-action-btn">💬</button>
+                        <button class="post-modal-action-btn">📤</button>
+                    </div>
+
+                    <div class="post-modal-likes">
+                        좋아요 <span id="modalLikeCount">0</span>개
+                    </div>
+
+                    <div class="post-modal-date" id="modalDate">날짜</div>
+
+                    <!-- 댓글 입력 -->
+                    <div class="post-modal-comment-input">
+                        <input type="text"
+                               placeholder="댓글 달기..."
+                               id="commentInput"
+                               onkeypress="if(event.key==='Enter') addComment()">
+                        <button class="post-modal-post-btn" onclick="addComment()">게시</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 팔로워/팔로잉 모달 HTML -->
+<div id="followModal" class="modal-overlay" onclick="closeFollowModal(event)">
+    <div class="follow-modal-container" onclick="event.stopPropagation()">
+        <div class="follow-modal-header">
+            <div class="follow-modal-title" id="followModalTitle">팔로워</div>
+            <button class="follow-modal-close" onclick="closeFollowModal()">&times;</button>
+        </div>
+        <div class="follow-modal-body" id="followModalBody"></div>
+    </div>
+</div>
+
+<!-- 여기까지 추가 -->
 </body>
 </html>
