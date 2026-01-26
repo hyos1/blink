@@ -1,9 +1,6 @@
 package com.example.blink.service.post;
 
-import com.example.blink.domain.Comment;
-import com.example.blink.domain.Member;
-import com.example.blink.domain.Post;
-import com.example.blink.domain.PostImage;
+import com.example.blink.domain.*;
 import com.example.blink.file.request.UploadFile;
 import com.example.blink.repository.CommentRepository;
 import com.example.blink.repository.MemberRepository;
@@ -18,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -72,7 +70,7 @@ public class PostService {
         Long postLikeCount = postLikeRepository.countByPostId(post.getId());
 
         // 내가 좋아요 눌렀는
-        boolean isLikedByMe = postLikeRepository.existsByPostIdAndMemberId(post.getId(), loginMemberId);
+        boolean likedByMe = postLikeRepository.existsByPostIdAndMemberId(post.getId(), loginMemberId);
 
         // 내 게시물인지
         boolean isMyPost = author.getId().equals(loginMemberId);
@@ -90,7 +88,34 @@ public class PostService {
                 author.getId(), author.getName(), author.getProfileImage(),
                 post.getId(), post.getContent(), imageUrls, post.getCreatedAt(),
                 postLikeCount, Long.valueOf(commentDtos.size()),
-                isLikedByMe, isMyPost, commentDtos
+                likedByMe, isMyPost, commentDtos
         );
+    }
+
+    // 게시물에 좋아요(추가: true, 삭제: false)
+    @Transactional
+    public boolean toggleLike(Long memberId, Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        Optional<PostLike> exists = postLikeRepository.findByPostIdAndMemberId(postId, memberId);
+        if (exists.isPresent()) {
+            // 좋아요 있으면 삭제
+            postLikeRepository.delete(exists.get());
+            return false;
+        } else {
+            // 좋아요 없으면 추가
+            PostLike postLike = PostLike.createPostLike(post, member);
+            postLikeRepository.save(postLike);
+            return true;
+        }
+    }
+
+    // 게시물 좋아요 수 조회
+    public Long getLikeCount(Long postId) {
+        return postLikeRepository.countByPostId(postId);
     }
 }

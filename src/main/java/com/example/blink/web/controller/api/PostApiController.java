@@ -1,19 +1,25 @@
 package com.example.blink.web.controller.api;
 
+import com.example.blink.service.comment.CommentService;
 import com.example.blink.service.login.response.LoginMember;
 import com.example.blink.service.post.PostService;
 import com.example.blink.service.post.response.PostDetailDto;
+import com.example.blink.web.dto.CommentRequestDto;
+import com.example.blink.web.dto.response.CommentResponseDto;
+import com.example.blink.web.dto.response.PostLikeResponseDto;
 import com.example.blink.web.session.SessionConst;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class PostPageController {
+public class PostApiController {
 
     private final PostService postService;
+    private final CommentService commentService;
 
     // 게시물 상세 조회
     @GetMapping("/api/posts/{postId}")
@@ -23,5 +29,16 @@ public class PostPageController {
 
         log.info("컨트롤러 실행");
         return postService.getPostDetail(postId, loginMember.getId());
+    }
+
+    // 게시물 좋아요
+    @PostMapping("/api/posts/{postId}/like")
+    public PostLikeResponseDto toggleLike(
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
+            @PathVariable Long postId) {
+
+        boolean likedByMe = postService.toggleLike(loginMember.getId(), postId);
+        Long likeCount = postService.getLikeCount(postId);
+        return new PostLikeResponseDto(likedByMe, likeCount);
     }
 }
