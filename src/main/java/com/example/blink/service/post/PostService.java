@@ -74,7 +74,7 @@ public class PostService {
         boolean likedByMe = postLikeRepository.existsByPostIdAndMemberId(post.getId(), loginMemberId);
 
         // 내 게시물인지
-        boolean isMyPost = author.getId().equals(loginMemberId);
+        boolean myPost = author.getId().equals(loginMemberId);
 
         // 댓글 목록
         List<Comment> comments = commentRepository.findByPostIdOrderByCreatedAtAsc(post.getId());
@@ -89,7 +89,7 @@ public class PostService {
                 author.getId(), author.getName(), author.getProfileImage(),
                 post.getId(), post.getContent(), imageUrls, post.getCreatedAt(),
                 postLikeCount, Long.valueOf(commentDtos.size()),
-                likedByMe, isMyPost, commentDtos
+                likedByMe, myPost, commentDtos
         );
     }
 
@@ -120,5 +120,17 @@ public class PostService {
         Long likeCount = postLikeRepository.countByPostId(postId);
 
         return new PostLikeResultDto(likedByMe, likeCount);
+    }
+
+    @Transactional
+    public void deletePost(Long postId, Long loginMemberId) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> new IllegalArgumentException("존재하지 않는 게시물입니다.")
+        );
+
+        if (!post.getMember().getId().equals(loginMemberId)) {
+            throw new IllegalStateException("작성자만 삭제할 수 있습니다.");
+        }
+        postRepository.delete(post);
     }
 }

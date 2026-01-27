@@ -12,8 +12,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Slf4j
 @RestController
+@RequestMapping("/api/posts")
 @RequiredArgsConstructor
 public class PostApiController {
 
@@ -21,7 +24,7 @@ public class PostApiController {
     private final CommentService commentService;
 
     // 게시물 상세 조회
-    @GetMapping("/api/posts/{postId}")
+    @GetMapping("/{postId}")
     public PostDetailDto getPostDetail(
             @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
             @PathVariable Long postId) {
@@ -31,7 +34,7 @@ public class PostApiController {
     }
 
     // 게시물 좋아요
-    @PostMapping("/api/posts/{postId}/like")
+    @PostMapping("/{postId}/like")
     public PostLikeResultDto toggleLike(
             @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
             @PathVariable Long postId) {
@@ -40,7 +43,7 @@ public class PostApiController {
     }
 
     // 게시물에 댓글 추가
-    @PostMapping("/api/posts/{postId}/comments")
+    @PostMapping("/{postId}/comments")
     public CommentCreateResult addComment(
             @PathVariable Long postId,
             @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
@@ -48,5 +51,15 @@ public class PostApiController {
         // 댓글 dto에서도 검증할지 객체 내부 검증으로 끝낼지 고민(bindingResult)
         log.info("댓글 ={}", commentRequestDto.getContent());
         return commentService.addComment(postId, loginMember.getId(), commentRequestDto.getContent());
+    }
+
+    // 게시물 삭제
+    @DeleteMapping("/{postId}")
+    public Map<String, String> deletePost(
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
+            @PathVariable Long postId) {
+        postService.deletePost(postId, loginMember.getId());
+
+        return Map.of("message", "삭제 완료");
     }
 }

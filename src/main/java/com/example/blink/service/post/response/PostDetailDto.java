@@ -25,7 +25,7 @@ public class PostDetailDto {
     private Long commentCount;
 
     private boolean likedByMe; // 내가 좋아요 눌렀는지
-    private boolean isMyPost; // 내 게시물인지
+    private boolean myPost; // 내 게시물인지
 
     private List<CommentDto> comments;
 
