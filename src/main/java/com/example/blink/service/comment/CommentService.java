@@ -5,7 +5,7 @@ import com.example.blink.domain.Member;
 import com.example.blink.domain.Post;
 import com.example.blink.repository.MemberRepository;
 import com.example.blink.repository.PostRepository;
-import com.example.blink.web.dto.response.CommentResponseDto;
+import com.example.blink.service.comment.response.CommentCreateResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,7 +20,7 @@ public class CommentService {
 
     // 댓글 작성
     @Transactional
-    public CommentResponseDto addComment(Long postId, Long memberId, String content) {
+    public CommentCreateResult addComment(Long postId, Long memberId, String content) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
         Member member = memberRepository.findById(memberId).orElseThrow(
@@ -31,7 +31,7 @@ public class CommentService {
         // Post CascadeType 의하여 Comment 저장됨
         post.addComment(comment);
 
-        return new CommentResponseDto(
+        return new CommentCreateResult(
                 comment.getId(), member.getName(), member.getProfileImage(),
                 comment.getContent(), comment.getCreatedAt());
     }

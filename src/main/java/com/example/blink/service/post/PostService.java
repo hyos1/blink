@@ -9,6 +9,7 @@ import com.example.blink.repository.PostRepository;
 import com.example.blink.service.post.request.CreatePostCommand;
 import com.example.blink.service.post.response.PostDetailDto;
 import com.example.blink.service.post.response.ProfilePostDto;
+import com.example.blink.service.post.response.PostLikeResultDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -94,28 +95,30 @@ public class PostService {
 
     // 게시물에 좋아요(추가: true, 삭제: false)
     @Transactional
-    public boolean toggleLike(Long memberId, Long postId) {
+    public PostLikeResultDto toggleLike(Long memberId, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
+        boolean likedByMe;
+
         Optional<PostLike> exists = postLikeRepository.findByPostIdAndMemberId(postId, memberId);
         if (exists.isPresent()) {
             // 좋아요 있으면 삭제
             postLikeRepository.delete(exists.get());
-            return false;
+            likedByMe = false;
         } else {
             // 좋아요 없으면 추가
             PostLike postLike = PostLike.createPostLike(post, member);
             postLikeRepository.save(postLike);
-            return true;
+            likedByMe = true;
         }
-    }
 
-    // 게시물 좋아요 수 조회
-    public Long getLikeCount(Long postId) {
-        return postLikeRepository.countByPostId(postId);
+        // 게시물 좋아요 수 조회
+        Long likeCount = postLikeRepository.countByPostId(postId);
+
+        return new PostLikeResultDto(likedByMe, likeCount);
     }
 }

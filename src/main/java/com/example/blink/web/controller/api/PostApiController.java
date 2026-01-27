@@ -5,12 +5,11 @@ import com.example.blink.service.login.response.LoginMember;
 import com.example.blink.service.post.PostService;
 import com.example.blink.service.post.response.PostDetailDto;
 import com.example.blink.web.dto.CommentRequestDto;
-import com.example.blink.web.dto.response.CommentResponseDto;
-import com.example.blink.web.dto.response.PostLikeResponseDto;
+import com.example.blink.service.comment.response.CommentCreateResult;
+import com.example.blink.service.post.response.PostLikeResultDto;
 import com.example.blink.web.session.SessionConst;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -33,18 +32,16 @@ public class PostApiController {
 
     // 게시물 좋아요
     @PostMapping("/api/posts/{postId}/like")
-    public PostLikeResponseDto toggleLike(
+    public PostLikeResultDto toggleLike(
             @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
             @PathVariable Long postId) {
 
-        boolean likedByMe = postService.toggleLike(loginMember.getId(), postId);
-        Long likeCount = postService.getLikeCount(postId);
-        return new PostLikeResponseDto(likedByMe, likeCount);
+        return postService.toggleLike(loginMember.getId(), postId);
     }
 
     // 게시물에 댓글 추가
     @PostMapping("/api/posts/{postId}/comments")
-    public CommentResponseDto addComment(
+    public CommentCreateResult addComment(
             @PathVariable Long postId,
             @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
             @RequestBody CommentRequestDto commentRequestDto) {
