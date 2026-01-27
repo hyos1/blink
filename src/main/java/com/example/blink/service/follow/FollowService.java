@@ -72,4 +72,28 @@ public class FollowService {
                             follower.getProfileImage(), followByMe);
                 }).collect(Collectors.toList());
     }
+
+    // 특정 회원 "팔로우" 조회
+    public List<FollowDto> getFollowings(Long memberId, Long loginMemberId) {
+
+        List<Follow> follows = followRepository.findByFollowerId(memberId);
+
+        // 로그인 한 사람이 팔로우 한 사람들 id
+        Set<Long> myFollowingIds = followRepository
+                .findFollowingIdsByFollowerId(loginMemberId)
+                .stream().collect(Collectors.toSet());
+
+        return follows.stream()
+                .map(follow -> {
+                    // 특정 회원이 팔로우 한 사람들
+                    Member following = follow.getFollowing();
+                    boolean followByMe = myFollowingIds.contains(following.getId());
+                    return new FollowDto(following.getId(), following.getName(),
+                            following.getProfileImage(), followByMe);
+                }).collect(Collectors.toList());
+    }
+
+    public boolean isFollowing(Long followerId, Long followingId) {
+        return followRepository.existsByFollowerIdAndFollowingId(followerId, followingId);
+    }
 }

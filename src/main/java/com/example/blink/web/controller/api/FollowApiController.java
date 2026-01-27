@@ -23,4 +23,20 @@ public class FollowApiController {
             @PathVariable Long memberId) {
         return followService.getFollowers(memberId, loginMember.getId());
     }
+
+    @GetMapping("/{memberId}/followings")
+    public List<FollowDto> getFollowings(
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
+            @PathVariable Long memberId) {
+        return followService.getFollowings(memberId, loginMember.getId());
+    }
+
+    @PostMapping("/{followingId}")
+    public Map<String, Boolean> toggleFollow(
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
+            @PathVariable Long followingId) {
+        followService.toggleFollow(loginMember.getId(), followingId);
+        boolean isFollowing = followService.isFollowing(loginMember.getId(), followingId);
+        return Map.of("isFollowing", isFollowing);
+    }
 }
