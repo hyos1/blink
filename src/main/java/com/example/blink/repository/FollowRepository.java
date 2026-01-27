@@ -2,7 +2,10 @@ package com.example.blink.repository;
 
 import com.example.blink.domain.Follow;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
@@ -21,4 +24,16 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     // 특정 팔로우 삭제
     void deleteByFollowerIdAndFollowingId(Long followerId, Long followingId);
+
+    // 특정 회원을 팔로우 하는 사람들 조회
+    @Query("select f from Follow f " +
+            "join fetch f.follower " +
+            "where f.following.id = :memberId")
+    List<Follow> findByFollowingId(@Param("memberId") Long memberId);
+
+    // 로그인 한 사람이 팔로우 한 사람들 id
+    @Query("select f.following.id " +
+            "from Follow f " +
+            "where f.follower.id = :loginMemberId")
+    List<Long> findFollowingIdsByFollowerId(@Param("loginMemberId") Long loginMemberId);
 }
