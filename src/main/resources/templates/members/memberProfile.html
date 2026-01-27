@@ -668,6 +668,10 @@
         <div class="logo" th:onclick="|location.href='/'|">Blink</div>
         <div class="top-actions">
             <button class="icon-btn" th:onclick="|location.href='/'|">🏠</button>
+            <!-- 본인 프로필이면 게시물 추가 버튼 표시 -->
+            <button th:if="${profile.isMyProfile}"
+                    class="icon-btn"
+                    th:onclick="|location.href='@{/posts/add}'|">➕</button>
             <button class="icon-btn">💬</button>
             <button class="icon-btn">🔔</button>
         </div>
@@ -821,7 +825,12 @@
     </div>
 </div>
 
-<script>
+<script th:inline="javascript">
+
+    // Thymeleaf에서 JavaScript 변수로 주입
+    const profileMemberId = [[${profile.id}]];
+    const loginMemberId = [[${session.loginMember.id}]];
+
     function showTab(tabName) {
         const tabs = document.querySelectorAll('.tab');
         tabs.forEach(tab => tab.classList.remove('active'));
@@ -898,6 +907,15 @@
             // 댓글 로드
             loadComments(data.comments);
 
+            // 본인 게시물이면 삭제 버튼 표시
+            const moreBtn = document.querySelector('.post-modal-more');
+            if (data.myPost) {
+                moreBtn.style.display = 'block';
+                moreBtn.onclick = () => showDeletePostMenu();
+            } else {
+                moreBtn.style.display = 'none';
+            }
+
             // 모달 열기
             document.getElementById('postModal').classList.add('active');
             document.body.style.overflow = 'hidden';
@@ -907,6 +925,35 @@
             alert('게시물을 불러올 수 없습니다.');
         }
     }
+
+    // 게시물 삭제 메뉴 표시
+    function showDeletePostMenu() {
+        if (confirm('게시물을 삭제하시겠습니까?')) {
+            deletePost();
+        }
+    }
+
+    // 게시물 삭제
+    async function deletePost() {
+        if (!currentPostId) return;
+
+        try {
+            const response = await fetch(`/api/posts/${currentPostId}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) throw new Error('삭제 실패');
+
+            alert('게시물이 삭제되었습니다.');
+            closePostModal();
+            location.reload(); // 프로필 페이지 새로고침
+
+        } catch (error) {
+            console.error('삭제 실패:', error);
+            alert('게시물 삭제 중 오류가 발생했습니다.');
+        }
+    }
+
 
     // 게시물 모달 닫기
     function closePostModal(event) {
@@ -979,19 +1026,101 @@
         return date.toLocaleDateString('ko-KR');
     }
 
-    // 팔로워/팔로잉 모달
-    function openFollowersModal() {
+    // 팔로워 모달 열기
+    async function openFollowersModal() {
         document.getElementById('followModalTitle').textContent = '팔로워';
-        document.getElementById('followModalBody').innerHTML = '<div style="padding: 40px; text-align: center; color: #8e8e8e;">팔로워가 없습니다</div>';
+
+        try {
+            const response = await fetch(`/api/follows/${profileMemberId}/followers`);
+            if (!response.ok) throw new Error('팔로워 목록을 불러올 수 없습니다.');
+
+            const followers = await response.json();
+            renderFollowList(followers);
+
+        } catch (error) {
+            console.error('팔로워 로딩 실패:', error);
+            document.getElementById('followModalBody').innerHTML =
+                '<div style="padding: 40px; text-align: center; color: #8e8e8e;">팔로워를 불러올 수 없습니다.</div>';
+        }
+
         document.getElementById('followModal').classList.add('active');
         document.body.style.overflow = 'hidden';
     }
 
-    function openFollowingModal() {
+    // 팔로잉 모달 열기
+    async function openFollowingModal() {
         document.getElementById('followModalTitle').textContent = '팔로잉';
-        document.getElementById('followModalBody').innerHTML = '<div style="padding: 40px; text-align: center; color: #8e8e8e;">팔로잉이 없습니다</div>';
+
+        try {
+            const response = await fetch(`/api/follows/${profileMemberId}/followings`);
+            if (!response.ok) throw new Error('팔로잉 목록을 불러올 수 없습니다.');
+
+            const followings = await response.json();
+            renderFollowList(followings);
+
+        } catch (error) {
+            console.error('팔로잉 로딩 실패:', error);
+            document.getElementById('followModalBody').innerHTML =
+                '<div style="padding: 40px; text-align: center; color: #8e8e8e;">팔로잉을 불러올 수 없습니다.</div>';
+        }
+
         document.getElementById('followModal').classList.add('active');
         document.body.style.overflow = 'hidden';
+    }
+
+    // 팔로우 목록 렌더링
+    function renderFollowList(users) {
+        const container = document.getElementById('followModalBody');
+
+        if (!users || users.length === 0) {
+            container.innerHTML = '<div style="padding: 40px; text-align: center; color: #8e8e8e;">목록이 없습니다.</div>';
+            return;
+        }
+
+        container.innerHTML = users.map(user => `
+            <div class="follow-item">
+                <div class="follow-avatar">
+                    <img src="${user.profileImageUrl || '/images/default-profile.svg'}" alt="프로필">
+                </div>
+                <div class="follow-info">
+                    <div class="follow-username" onclick="location.href='/members/profile/${user.name}'">
+                        ${user.name}
+                    </div>
+                </div>
+                ${user.memberId !== loginMemberId ? `
+                    <button class="follow-btn-small ${user.followByMe ? 'following' : ''}"
+                            onclick="toggleFollowInModal(${user.memberId}, this)">
+                        ${user.followByMe ? '팔로잉' : '팔로우'}
+                    </button>
+                ` : ''}
+            </div>
+        `).join('');
+    }
+
+    // 모달 내 팔로우 토글
+    async function toggleFollowInModal(userId, button) {
+        try {
+            const response = await fetch(`/api/follows/${userId}`, {
+                method: 'POST'
+            });
+
+            if (!response.ok) throw new Error('팔로우 처리 실패');
+
+            const data = await response.json();
+
+            // 버튼 상태 업데이트
+            if (data.isFollowing) {
+                button.classList.add('following');
+                button.textContent = '팔로잉';
+            } else {
+                button.classList.remove('following');
+                button.textContent = '팔로우';
+            }
+
+        } catch (error) {
+            console.error('팔로우 토글 실패:', error);
+            alert('팔로우 처리 중 오류가 발생했습니다.');
+        }
     }
 
     function closeFollowModal(event) {
