@@ -699,7 +699,7 @@
 
                 <!-- 본인 프로필일 때 -->
                 <button th:if="*{isMyProfile}" class="edit-profile-btn"
-                        th:onclick="|location.href='members/profile/edit'|">프로필 편집
+                        th:onclick="|location.href='@{/members/profile/edit}'|">프로필 편집
                 </button>
                 <button th:if="*{isMyProfile}" class="icon-btn"
                         th:onclick="|location.href='/settings'|">⚙️
@@ -997,7 +997,7 @@
         }
 
         container.innerHTML = comments.map(comment => `
-            <div class="post-modal-comment" style="display: flex; gap: 12px;">
+            <div class="post-modal-comment" style="display: flex; gap: 12px; position: relative;">
                 <img src="${comment.authorProfileImage || '/images/default-profile.svg'}"
                      class="post-modal-author-pic"
                      alt="프로필">
@@ -1008,8 +1008,34 @@
                         ${formatDate(comment.createdAt)}
                     </div>
                 </div>
+                ${comment.myComment ? `
+                    <button onclick="deleteComment(${comment.commentId})"
+                            style="background: none; border: none; color: #ed4956; cursor: pointer; font-size: 12px;">
+                        삭제
+                    </button>
+                ` : ''}
             </div>
         `).join('');
+    }
+
+    // 댓글 삭제
+    async function deleteComment(commentId) {
+        if (!confirm('댓글을 삭제하시겠습니까?')) return;
+
+        try {
+            const response = await fetch(`/api/posts/${currentPostId}/comments/${commentId}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) throw new Error('삭제 실패');
+
+            // 모달 새로고침
+            openPostModal(currentPostId);
+
+        } catch (error) {
+            console.error('댓글 삭제 실패:', error);
+            alert('댓글 삭제 중 오류가 발생했습니다.');
+        }
     }
 
     // 날짜 포맷팅
@@ -1209,6 +1235,7 @@
 
             // 입력창 초기화
             input.value = '';
+            openPostModal(currentPostId);
 
         } catch (error) {
             console.error('댓글 작성 실패:', error);
