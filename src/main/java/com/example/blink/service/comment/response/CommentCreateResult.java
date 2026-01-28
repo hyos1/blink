@@ -14,4 +14,5 @@ public class CommentCreateResult {
     private String authorProfileImage;
     private String content;
     private LocalDateTime createdAt;
+    private boolean myComment;
 }

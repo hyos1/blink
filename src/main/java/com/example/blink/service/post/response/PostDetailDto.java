@@ -37,6 +37,6 @@ public class PostDetailDto {
         private String authorProfileImage;
         private String content;
         private LocalDateTime createdAt;
-        private Boolean isMyComment;
+        private Boolean myComment;
     }
 }
