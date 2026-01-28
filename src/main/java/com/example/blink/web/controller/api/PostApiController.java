@@ -62,4 +62,15 @@ public class PostApiController {
 
         return Map.of("message", "삭제 완료");
     }
+
+    // 게시물 댓글 삭제
+    @DeleteMapping("/{postId}/comments/{commentId}")
+    public Map<String, String> deleteComment(
+            @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
+            @PathVariable Long postId, @PathVariable Long commentId
+    ) {
+
+        commentService.deleteComment(commentId, loginMember.getId());
+        return Map.of("message", "삭제 완료");
+    }
 }
