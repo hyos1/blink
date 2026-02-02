@@ -1,4 +1,4 @@
-package com.example.blink.repository;
+package com.example.blink.repository.comment;
 
 import com.example.blink.domain.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,5 +13,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             "join fetch c.member " +
             "where c.post.id = :postId " +
             "order by c.createdAt asc")
-    List<Comment> findByPostIdOrderByCreatedAtAsc(@Param("postId") Long postId);
+    List<Comment> findAllWithMemberByPostIdOrderByCreatedAtAsc(@Param("postId") Long postId);
 }

@@ -2,21 +2,23 @@ package com.example.blink.service.post;
 
 import com.example.blink.domain.*;
 import com.example.blink.file.request.UploadFile;
-import com.example.blink.repository.CommentRepository;
-import com.example.blink.repository.MemberRepository;
-import com.example.blink.repository.PostLikeRepository;
-import com.example.blink.repository.PostRepository;
+import com.example.blink.repository.comment.CommentRepository;
+import com.example.blink.repository.member.MemberRepository;
+import com.example.blink.repository.post.query.FeedPostDto;
+import com.example.blink.repository.postlike.PostLikeRepository;
+import com.example.blink.repository.post.PostRepository;
 import com.example.blink.service.post.request.CreatePostCommand;
 import com.example.blink.service.post.response.PostDetailDto;
 import com.example.blink.service.post.response.ProfilePostDto;
 import com.example.blink.service.post.response.PostLikeResultDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -77,7 +79,7 @@ public class PostService {
         boolean myPost = author.getId().equals(loginMemberId);
 
         // 댓글 목록
-        List<Comment> comments = commentRepository.findByPostIdOrderByCreatedAtAsc(post.getId());
+        List<Comment> comments = commentRepository.findAllWithMemberByPostIdOrderByCreatedAtAsc(post.getId());
         List<PostDetailDto.CommentDto> commentDtos = comments.stream()
                 .map(c -> new PostDetailDto.CommentDto(
                         c.getId(), c.getMember().getName(), c.getMember().getProfileImage(),
@@ -132,5 +134,51 @@ public class PostService {
             throw new IllegalStateException("작성자만 삭제할 수 있습니다.");
         }
         postRepository.delete(post);
+    }
+
+    // Feed 화면에 보여줄 게시물
+    public Page<FeedPostDto> getFeedPosts(Long loginMemberId, int page, int size) {
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<Post> posts = postRepository.findAllWithMember(pageRequest);
+        if (posts.isEmpty()) {
+            return Page.empty();
+        }
+
+        return posts.map(post -> {
+            // 게시물 이미지 URL 추출
+            List<String> imageUrls = new ArrayList<>();
+            for (PostImage image : post.getImages()) {
+                imageUrls.add(image.getImageUrl());
+            }
+
+            // 좋아요 수
+            Long postLikeCount = (long) post.getPostLikes().size();
+
+            // 댓글 수
+            Long postCommentCount = (long) post.getComments().size();
+
+            boolean likedByMe = false;
+
+            for (PostLike postLike : post.getPostLikes()) {
+                if (postLike.getMember().getId().equals(loginMemberId)) {
+                    likedByMe = true;
+                    break;
+                }
+            }
+
+            return new FeedPostDto(
+                    post.getId(),
+                    post.getContent(),
+                    post.getCreatedAt(),
+                    post.getMember().getId(),
+                    post.getMember().getName(),
+                    post.getMember().getProfileImage(),
+                    imageUrls,
+                    postLikeCount,
+                    postCommentCount,
+                    likedByMe
+            );
+        });
     }
 }
