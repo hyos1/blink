@@ -1,4 +1,4 @@
-package com.example.blink.repository;
+package com.example.blink.repository.member;
 
 import com.example.blink.domain.Member;
 import com.example.blink.service.member.response.MemberProfileDto;
@@ -21,7 +21,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     boolean existsByEmail(String email);
 
     @Query("select new com.example.blink.service.member.response.MemberSidebarDto(" +
-            "m.id, m.name, m.email, " +
+            "m.id, m.name, m.email, m.profileImage, " +
             "(select count(p) from Post p where p.member = m), " +
             "(select count(f) from Follow f where f.following = m), " +
             "(select count(f) from Follow f where f.follower = m)" +

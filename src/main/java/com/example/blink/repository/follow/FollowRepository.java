@@ -1,4 +1,4 @@
-package com.example.blink.repository;
+package com.example.blink.repository.follow;
 
 import com.example.blink.domain.Follow;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,7 @@
 package com.example.blink.service.login;
 
 import com.example.blink.domain.Member;
-import com.example.blink.repository.MemberRepository;
+import com.example.blink.repository.member.MemberRepository;
 import com.example.blink.service.login.request.LoginCommand;
 import com.example.blink.service.login.response.LoginMember;
 import lombok.RequiredArgsConstructor;

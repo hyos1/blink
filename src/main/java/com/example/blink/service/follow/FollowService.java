@@ -2,8 +2,8 @@ package com.example.blink.service.follow;
 
 import com.example.blink.domain.Follow;
 import com.example.blink.domain.Member;
-import com.example.blink.repository.FollowRepository;
-import com.example.blink.repository.MemberRepository;
+import com.example.blink.repository.follow.FollowRepository;
+import com.example.blink.repository.member.MemberRepository;
 import com.example.blink.service.follow.response.FollowDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

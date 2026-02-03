@@ -1,4 +1,4 @@
-package com.example.blink.repository;
+package com.example.blink.repository.postlike;
 
 import com.example.blink.domain.PostLike;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,9 +1,9 @@
 package com.example.blink.service.member;
 
 import com.example.blink.domain.Member;
-import com.example.blink.repository.FollowRepository;
-import com.example.blink.repository.MemberRepository;
-import com.example.blink.repository.PostRepository;
+import com.example.blink.repository.follow.FollowRepository;
+import com.example.blink.repository.member.MemberRepository;
+import com.example.blink.repository.post.PostRepository;
 import com.example.blink.service.member.request.SignupCommand;
 import com.example.blink.service.member.response.MemberProfileDto;
 import com.example.blink.service.member.response.MemberSidebarDto;
@@ -36,7 +36,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void save(SignupCommand signupCommand) {
+    public Long save(SignupCommand signupCommand) {
 
         if (memberRepository.existsByName(signupCommand.getName())) {
             throw new IllegalStateException("사용 중인 이름입니다.");
@@ -49,6 +49,7 @@ public class MemberService {
         String encodedPassword = passwordEncoder.encode(signupCommand.getPassword());
         Member member = new Member(signupCommand.getName(), signupCommand.getEmail(), encodedPassword);
         memberRepository.save(member);
+        return member.getId();
     }
 
     // 피드 화면 사이드에 회원 정보 조회
