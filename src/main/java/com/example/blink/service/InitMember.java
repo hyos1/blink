@@ -1,9 +1,7 @@
 package com.example.blink.service;
 
-import com.example.blink.file.FileStore;
 import com.example.blink.service.member.MemberService;
 import com.example.blink.service.member.request.SignupCommand;
-import com.example.blink.service.post.PostService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

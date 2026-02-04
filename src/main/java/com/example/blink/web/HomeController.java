@@ -2,8 +2,8 @@ package com.example.blink.web;
 
 import com.example.blink.repository.post.query.FeedPostDto;
 import com.example.blink.service.login.response.LoginMember;
-import com.example.blink.service.member.response.MemberSidebarDto;
 import com.example.blink.service.member.MemberService;
+import com.example.blink.service.member.response.MemberSidebarDto;
 import com.example.blink.service.post.PostService;
 import com.example.blink.web.dto.LoginForm;
 import com.example.blink.web.session.SessionConst;

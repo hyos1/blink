@@ -5,9 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Table(name = "follows",
         uniqueConstraints = @UniqueConstraint(columnNames = {"follower_id", "following_id"}))

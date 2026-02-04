@@ -1,12 +1,12 @@
 package com.example.blink.web.controller.api;
 
 import com.example.blink.service.comment.CommentService;
+import com.example.blink.service.comment.response.CommentCreateResult;
 import com.example.blink.service.login.response.LoginMember;
 import com.example.blink.service.post.PostService;
 import com.example.blink.service.post.response.PostDetailDto;
-import com.example.blink.web.dto.CommentRequestDto;
-import com.example.blink.service.comment.response.CommentCreateResult;
 import com.example.blink.service.post.response.PostLikeResultDto;
+import com.example.blink.web.dto.CommentRequestDto;
 import com.example.blink.web.session.SessionConst;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

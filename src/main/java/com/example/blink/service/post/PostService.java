@@ -4,13 +4,13 @@ import com.example.blink.domain.*;
 import com.example.blink.file.request.UploadFile;
 import com.example.blink.repository.comment.CommentRepository;
 import com.example.blink.repository.member.MemberRepository;
+import com.example.blink.repository.post.PostRepository;
 import com.example.blink.repository.post.query.FeedPostDto;
 import com.example.blink.repository.postlike.PostLikeRepository;
-import com.example.blink.repository.post.PostRepository;
 import com.example.blink.service.post.request.CreatePostCommand;
 import com.example.blink.service.post.response.PostDetailDto;
-import com.example.blink.service.post.response.ProfilePostDto;
 import com.example.blink.service.post.response.PostLikeResultDto;
+import com.example.blink.service.post.response.ProfilePostDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
