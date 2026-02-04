@@ -7,10 +7,15 @@ import com.example.blink.repository.post.PostRepository;
 import com.example.blink.service.member.request.SignupCommand;
 import com.example.blink.service.member.response.MemberProfileDto;
 import com.example.blink.service.member.response.MemberSidebarDto;
+import com.example.blink.service.member.response.MemberSimpleDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -81,5 +86,17 @@ public class MemberService {
         }
 
         return profile;
+    }
+
+    // 회원 이름으로 검색
+    public List<MemberSimpleDto> searchMembers(String query) {
+
+        // 회원이름으로 회원 찾기 (5명씩)
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        List<Member> members = memberRepository.findByNameContainingIgnoreCase(query, pageRequest);
+
+        return members.stream()
+                .map(m -> new MemberSimpleDto(m.getId(), m.getName(), m.getProfileImage()))
+                .collect(Collectors.toList());
     }
 }

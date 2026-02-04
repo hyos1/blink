@@ -3,10 +3,12 @@ package com.example.blink.repository.member;
 import com.example.blink.domain.Member;
 import com.example.blink.service.member.response.MemberProfileDto;
 import com.example.blink.service.member.response.MemberSidebarDto;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -37,4 +39,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "from Member m " +
             "where m.id = :memberId")
     Optional<MemberProfileDto> findProfileById(@Param("memberId") Long memberId);
+
+    // 이름으로 회원 검색 (대소문자 구분 없이, 회원 이름 앞 뒤에 %붙힌 Like 검색)
+    List<Member> findByNameContainingIgnoreCase(@Param("query") String query, Pageable pageable);
 }

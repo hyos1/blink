@@ -16,10 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class InitMember {
 
     private final MemberService memberService;
-    private final PostService postService;
-    private final FileStore fileStore;
-
-    private static final String BASE_PATH = "C:\\Users\\hyozz\\Downloads\\postImages";
 
     @PostConstruct
     public void init() {
