@@ -3,6 +3,7 @@ package com.example.blink.repository.member;
 import com.example.blink.domain.Member;
 import com.example.blink.service.member.response.MemberProfileDto;
 import com.example.blink.service.member.response.MemberSidebarDto;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -42,4 +43,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // 이름으로 회원 검색 (대소문자 구분 없이, 회원 이름 앞 뒤에 %붙힌 Like 검색)
     List<Member> findByNameContainingIgnoreCase(@Param("query") String query, Pageable pageable);
+
+    // 회원 추천(내가 팔로우하지 않은 사람)
+    @Query("select m from Member m where m.id NOT IN " +
+            "(select f.following.id from Follow f " +
+            "where f.follower.id = :loginMemberId) " +
+            "AND m.id <> :loginMemberId")
+    Page<Member> findMembersNotFollowedByLoginMember(@Param("loginMemberId") Long loginMemberId, Pageable pageable);
 }

@@ -3,10 +3,7 @@ package com.example.blink.web.controller.api;
 import com.example.blink.service.member.MemberService;
 import com.example.blink.service.member.response.MemberSimpleDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 

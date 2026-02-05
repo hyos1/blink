@@ -99,4 +99,17 @@ public class MemberService {
                 .map(m -> new MemberSimpleDto(m.getId(), m.getName(), m.getProfileImage()))
                 .collect(Collectors.toList());
     }
+
+    // 회원 추천 (내가 팔로우 안 한 회원만)
+    public List<MemberSimpleDto> getRecommendedMembers(Long loginMemberId) {
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        // 회원 추천에는 Page 필요 없어서 바로 getContent()
+        List<Member> contents = memberRepository.findMembersNotFollowedByLoginMember(
+                loginMemberId, pageRequest
+        ).getContent();
+
+        return contents.stream()
+                .map(m -> new MemberSimpleDto(m.getId(), m.getName(), m.getProfileImage()))
+                .collect(Collectors.toList());
+    }
 }
