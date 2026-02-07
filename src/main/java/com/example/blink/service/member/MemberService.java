@@ -1,6 +1,8 @@
 package com.example.blink.service.member;
 
 import com.example.blink.domain.Member;
+import com.example.blink.exception.ClientException;
+import com.example.blink.exhandler.ErrorCode;
 import com.example.blink.repository.follow.FollowRepository;
 import com.example.blink.repository.member.MemberRepository;
 import com.example.blink.repository.post.PostRepository;
@@ -17,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.blink.exhandler.ErrorCode.*;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -30,13 +34,13 @@ public class MemberService {
     // 이름으로 memberId 조회
     public Long getMemberIdByName(String name) {
         return memberRepository.findIdByName(name).orElseThrow(
-                () -> new IllegalArgumentException("해당 회원이 존재하지 않습니다.")
+                () -> new ClientException(USER_NOT_FOUND)
         );
     }
 
     public String getMemberNameById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."))
+                .orElseThrow(() -> new ClientException(USER_NOT_FOUND))
                 .getName();
     }
 
@@ -44,11 +48,11 @@ public class MemberService {
     public Long save(SignupCommand signupCommand) {
 
         if (memberRepository.existsByName(signupCommand.getName())) {
-            throw new IllegalStateException("사용 중인 이름입니다.");
+            throw new ClientException(DUPLICATE_NAME);
         }
 
         if (memberRepository.existsByEmail(signupCommand.getEmail())) {
-            throw new IllegalStateException("사용 중인 이메일입니다.");
+            throw new ClientException(DUPLICATE_EMAIL);
         }
 
         String encodedPassword = passwordEncoder.encode(signupCommand.getPassword());
@@ -60,7 +64,7 @@ public class MemberService {
     // 피드 화면 사이드에 회원 정보 조회
     public MemberSidebarDto getMemberSidebarDto(Long loginMemberId) {
         return memberRepository.findSidebarInfoById(loginMemberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new ClientException(USER_NOT_FOUND));
     }
 
     // 프로필 정보 조회
@@ -68,7 +72,7 @@ public class MemberService {
 
         // 기본 정보 조회
         MemberProfileDto profile = memberRepository.findProfileById(targetMemberId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다."));
+                .orElseThrow(() -> new ClientException(USER_NOT_FOUND));
 
         // 게시물 수, 팔로잉 팔로워 수 설정
         profile.setPostCount(postRepository.countPostsByMemberId(targetMemberId));
