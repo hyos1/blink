@@ -1,5 +1,6 @@
 package com.example.blink.domain;
 
+import com.example.blink.exception.ClientException;
 import com.example.blink.file.request.UploadFile;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.blink.exhandler.ErrorCode.*;
 
 @Entity
 @Table(name = "posts")
@@ -89,19 +92,19 @@ public class Post extends BaseEntity {
     // 검증 로직
     private static void validationContent(String content) {
         if (content == null || content.trim().isEmpty()) {
-            throw new IllegalArgumentException("게시물 내용은 필수입니다.");
+            throw new ClientException(POST_CONTENT_REQUIRED);
         }
-        if (content.length() > 1000) {
-            throw new IllegalArgumentException("게시물 내용은 1000자를 초과할 수 없습니다.");
+        if (content.length() > 500) {
+            throw new ClientException(POST_CONTENT_TOO_LONG); // 게시물 내용 500자까지 가능
         }
     }
 
     private static void validationImage(List<UploadFile> uploadFiles) {
         if (uploadFiles == null || uploadFiles.isEmpty()) {
-            throw new IllegalStateException("사진은 최소 1장 필요합니다.");
+            throw new ClientException(POST_IMAGE_REQUIRED); // 사진 최소 1장 이상
         } else {
             if (uploadFiles.size() > 3) {
-                throw new IllegalArgumentException("사진은 최대 3장까지 업로드 가능합니다.");
+                throw new ClientException(POST_IMAGE_LIMIT_EXCEEDED); // 사진 최대 3장까지 가능
             }
         }
     }

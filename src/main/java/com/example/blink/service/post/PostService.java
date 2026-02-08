@@ -1,6 +1,8 @@
 package com.example.blink.service.post;
 
 import com.example.blink.domain.*;
+import com.example.blink.exception.ClientException;
+import com.example.blink.exhandler.ErrorCode;
 import com.example.blink.file.request.UploadFile;
 import com.example.blink.repository.comment.CommentRepository;
 import com.example.blink.repository.member.MemberRepository;
@@ -23,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.example.blink.exhandler.ErrorCode.*;
+
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -38,7 +42,7 @@ public class PostService {
     @Transactional
     public Long addPost(CreatePostCommand command) {
         Member member = memberRepository.findById(command.getMemberId()).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 회원입니다.")
+                () -> new ClientException(USER_NOT_FOUND)
         );
 
         // 이미지 추가
@@ -58,7 +62,7 @@ public class PostService {
     public PostDetailDto getPostDetail(Long postId, Long loginMemberId) {
 
         Post post = postRepository.findByIdWithMember(postId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 게시물입니다.")
+                () -> new ClientException(POST_NOT_FOUND)
         );
 
         // 작성자 정보
@@ -101,10 +105,10 @@ public class PostService {
     @Transactional
     public PostLikeResultDto toggleLike(Long memberId, Long postId) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시물입니다."));
+                .orElseThrow(() -> new ClientException(POST_NOT_FOUND));
 
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new ClientException(USER_NOT_FOUND));
 
         boolean likedByMe;
 
@@ -129,11 +133,11 @@ public class PostService {
     @Transactional
     public void deletePost(Long postId, Long loginMemberId) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 게시물입니다.")
+                () -> new ClientException(POST_NOT_FOUND)
         );
 
         if (!post.getMember().getId().equals(loginMemberId)) {
-            throw new IllegalStateException("작성자만 삭제할 수 있습니다.");
+            throw new ClientException(POST_DELETE_FORBIDDEN); // 본인 게시물만 삭제 가능
         }
         postRepository.delete(post);
     }
