@@ -247,12 +247,6 @@
         <!-- action을 컨트롤러 URL로 변경 (예: /login) -->
         <form action="/login" th:action="@{/login}" th:object="${loginForm}" method="post">
 
-            <!-- ObjectError 있으면 출력 -->
-            <div th:if="${#fields.hasGlobalErrors()}">
-                <p class="field-error" th:each="err : ${#fields.globalErrors()}"
-                    th:text="${err}"> 전체 오류 메세지</p>
-            </div>
-
             <div class="input-group">
                 <label for="email" class="input-label">이메일</label>
                 <input type="email" id="email" th:field="*{email}" class="input-field"
@@ -270,6 +264,11 @@
                 <div class="field-error" th:errors="*{password}">
                     비밀번호 오류
                 </div>
+            </div>
+            <!-- ObjectError 있으면 출력 -->
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <p class="error-message" th:each="err : ${#fields.globalErrors()}"
+                   th:text="${err}"> 전체 오류 메세지</p>
             </div>
 
             <button type="submit" class="submit-btn">로그인</button>
