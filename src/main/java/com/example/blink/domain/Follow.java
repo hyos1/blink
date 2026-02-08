@@ -1,5 +1,7 @@
 package com.example.blink.domain;
 
+import com.example.blink.exception.ClientException;
+import com.example.blink.exhandler.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -60,7 +62,7 @@ public class Follow {
     // 검증 메서드
     private static void validateFollow(Member follower, Member following) {
         if (follower.getId().equals(following.getId())) {
-            throw new IllegalStateException("자기 자신을 팔로우할 수 없습니다.");
+            throw new ClientException(ErrorCode.CANNOT_FOLLOW_SELF); //본인 팔로우 안됨
         }
     }
 

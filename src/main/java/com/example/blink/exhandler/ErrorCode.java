@@ -30,7 +30,16 @@ public enum ErrorCode {
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다."),
     COMMENT_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN, "본인의 댓글만 삭제할 수 있습니다."),
     COMMENT_CONTENT_REQUIRED(HttpStatus.BAD_REQUEST, "댓글 내용은 필수입니다."),
-    COMMENT_CONTENT_TOO_LONG(HttpStatus.BAD_REQUEST, "댓글은 100자를 초과할 수 없습니다.");
+    COMMENT_CONTENT_TOO_LONG(HttpStatus.BAD_REQUEST, "댓글은 100자를 초과할 수 없습니다."),
+
+    // 팔로우 관련 (4xx)
+    CANNOT_FOLLOW_SELF(HttpStatus.BAD_REQUEST, "자기 자신을 팔로우할 수 없습니다."),
+
+    // 서버 오류 (5xx)
+    DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "데이터베이스 오류가 발생했습니다."),
+    FILE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다."),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다.");
+
     private final HttpStatus httpStatus;
     private final String errorMessage;
 }

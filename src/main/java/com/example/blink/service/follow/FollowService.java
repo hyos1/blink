@@ -2,6 +2,8 @@ package com.example.blink.service.follow;
 
 import com.example.blink.domain.Follow;
 import com.example.blink.domain.Member;
+import com.example.blink.exception.ClientException;
+import com.example.blink.exhandler.ErrorCode;
 import com.example.blink.repository.follow.FollowRepository;
 import com.example.blink.repository.member.MemberRepository;
 import com.example.blink.service.follow.response.FollowDto;
@@ -13,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static com.example.blink.exhandler.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -38,9 +42,9 @@ public class FollowService {
 
         // 팔로우
         Member follower = memberRepository.findById(followerId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new ClientException(USER_NOT_FOUND));
         Member following = memberRepository.findById(followingId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+                .orElseThrow(() -> new ClientException(USER_NOT_FOUND));
 
         // 생성 메서드에서 자기 자신 팔로우 여부 검증
         Follow follow = Follow.createFollow(follower, following);
