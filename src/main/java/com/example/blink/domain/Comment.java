@@ -1,9 +1,13 @@
 package com.example.blink.domain;
 
+import com.example.blink.exception.ClientException;
+import com.example.blink.exhandler.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import static com.example.blink.exhandler.ErrorCode.*;
 
 @Entity
 @Table(name = "comments")
@@ -52,11 +56,11 @@ public class Comment extends BaseEntity {
     // 검증 로직
     private static void validateContent(String content) {
         if (content == null || content.trim().isEmpty()) {
-            throw new IllegalArgumentException("댓글 내용은 필수입니다.");
+            throw new ClientException(COMMENT_CONTENT_REQUIRED); // 댓글 내용 필수
         }
 
         if (content.length() > 100) {
-            throw new IllegalArgumentException("댓글은 100자를 초과할 수 없습니다.");
+            throw new ClientException(COMMENT_CONTENT_TOO_LONG); // 댓글 100자 미만
         }
     }
 }

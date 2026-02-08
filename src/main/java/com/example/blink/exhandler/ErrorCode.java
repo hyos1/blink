@@ -24,7 +24,13 @@ public enum ErrorCode {
     POST_IMAGE_REQUIRED(HttpStatus.BAD_REQUEST, "사진은 최소 1장 이상 필요합니다."),
     POST_CONTENT_REQUIRED(HttpStatus.BAD_REQUEST, "게시물 내용은 필수입니다."),
     POST_CONTENT_TOO_LONG(HttpStatus.BAD_REQUEST, "게시물 내용은 500자를 초과할 수 없습니다."),
-    POST_IMAGE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "사진은 최대 3장까지만 첨부할 수 있습니다.");
+    POST_IMAGE_LIMIT_EXCEEDED(HttpStatus.BAD_REQUEST, "사진은 최대 3장까지만 첨부할 수 있습니다."),
+
+    // 댓글 관련 (4xx)
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다."),
+    COMMENT_DELETE_FORBIDDEN(HttpStatus.FORBIDDEN, "본인의 댓글만 삭제할 수 있습니다."),
+    COMMENT_CONTENT_REQUIRED(HttpStatus.BAD_REQUEST, "댓글 내용은 필수입니다."),
+    COMMENT_CONTENT_TOO_LONG(HttpStatus.BAD_REQUEST, "댓글은 100자를 초과할 수 없습니다.");
     private final HttpStatus httpStatus;
     private final String errorMessage;
 }
