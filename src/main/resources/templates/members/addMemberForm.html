@@ -312,6 +312,11 @@
                 </div>
                 -->
             </div>
+            <div th:if="${#fields.hasGlobalErrors()}">
+                <p th:each="err : ${#fields.globalErrors()}" th:text="${err}" class ="error-message" >
+                    전체 에러 메세지
+                </p>
+            </div>
 
             <button type="submit" class="submit-btn">가입하기</button>
         </form>

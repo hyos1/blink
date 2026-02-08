@@ -1,5 +1,6 @@
 package com.example.blink.web.controller;
 
+import com.example.blink.exception.ClientException;
 import com.example.blink.service.login.response.LoginMember;
 import com.example.blink.service.member.MemberService;
 import com.example.blink.service.member.request.SignupCommand;
@@ -40,9 +41,14 @@ public class MemberController {
             return "members/addMemberForm";
         }
 
-        SignupCommand signupCommand = new SignupCommand(form.getName(), form.getEmail(), form.getPassword());
-
-        memberService.save(signupCommand);
+        try {
+            SignupCommand signupCommand = new SignupCommand(form.getName(), form.getEmail(), form.getPassword());
+            memberService.save(signupCommand);
+        } catch (ClientException e) {
+            // 중복 이름, 이메일 오류
+            bindingResult.reject("signupFail", e.getMessage());
+            return "members/addMemberForm";
+        }
         return "redirect:/login";
     }
 
