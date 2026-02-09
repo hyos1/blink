@@ -1,4 +1,4 @@
-package com.example.blink.web.controller;
+package com.example.blink.web.controller.view;
 
 import com.example.blink.service.follow.FollowService;
 import com.example.blink.service.login.response.LoginMember;
