@@ -57,7 +57,6 @@ public class LoginController {
         // 로그인 성공 시 기존 요청했던 URL로 이동
         return "redirect:" + redirectURL;
     }
-    // MemberService login로직 Exception 반환으로 처리할 예정
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) {
