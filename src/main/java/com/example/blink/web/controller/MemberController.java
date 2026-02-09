@@ -44,12 +44,12 @@ public class MemberController {
         try {
             SignupCommand signupCommand = new SignupCommand(form.getName(), form.getEmail(), form.getPassword());
             memberService.save(signupCommand);
+            return "redirect:/login";
         } catch (ClientException e) {
             // 중복 이름, 이메일 오류
             bindingResult.reject("signupFail", e.getMessage());
             return "members/addMemberForm";
         }
-        return "redirect:/login";
     }
 
     // 내 프로필 보기 (홈 버튼 클릭 시)

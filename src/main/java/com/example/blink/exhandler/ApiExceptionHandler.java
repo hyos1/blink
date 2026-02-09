@@ -16,7 +16,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(ClientException.class)
     public ResponseEntity<ErrorResponse> handleClientException(ClientException e) {
-        log.warn("ClientException: ", e.getMessage());
+        log.warn("ClientException: {}", e.getMessage());
 
         ErrorResponse response = new ErrorResponse(e.getErrorCode().name(), e.getMessage());
         return ResponseEntity
@@ -26,7 +26,7 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(ServerException.class)
     public ResponseEntity<ErrorResponse> handleServerException(ServerException e) {
-        log.error("ServerException:", e.getMessage(), e);
+        log.error("ServerException: {}", e.getMessage(), e);
 
         ErrorResponse response = new ErrorResponse(
                 "SERVER_ERROR", "서버 오류가 발생했습니다."
@@ -39,7 +39,7 @@ public class ApiExceptionHandler {
     // 내가 정의하지 못한 예외
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.error("예상치 못한 오류: ", e.getMessage(), e);
+        log.error("예상치 못한 오류: {}", e.getMessage(), e);
 
         ErrorResponse response = new ErrorResponse(
                 "UNKNOWN_ERROR", "알 수 없는 오류가 발생했습니다."
