@@ -27,10 +27,15 @@ spring:
 
 logging.level:
   org.hibernate.SQL: debug
+  org.springframework.web: DEBUG
+  org.springframework.boot.web.servlet.error: DEBUG
 #  org.hibernate.type: trace #파라미터 바인딩 확인
 
 # 세션 타임아웃 설정
 server:
   servlet:
     session:
-      timeout: 600
+      timeout: 60
+#      cookie:
+#        http-only: true
+#        secure: true #HTTPS 배포시 필요
