@@ -863,7 +863,9 @@
         try {
             const response = await fetch(`/api/posts/${postId}`);
             if (!response.ok) {
-                throw new Error('게시물을 불러올 수 없습니다.');
+                const error = await response.json();
+                alert(error.message || '게시물을 불러올 수 없습니다.');
+                return;
             }
 
             const data = await response.json();
@@ -942,8 +944,11 @@
                 method: 'DELETE'
             });
 
-            if (!response.ok) throw new Error('삭제 실패');
-
+            if (!response.ok) {
+                const error = await response.json();
+                alert(error.message || '게시물 삭제 중 오류가 발생했습니다.');
+                return;
+            }
             alert('게시물이 삭제되었습니다.');
             closePostModal();
             location.reload(); // 프로필 페이지 새로고침
@@ -1027,7 +1032,11 @@
                 method: 'DELETE'
             });
 
-            if (!response.ok) throw new Error('삭제 실패');
+            if (!response.ok) {
+                const error = await response.json();
+                alert(error.message || '댓글 삭제 중 오류가 발생했습니다.');
+                return;
+            }
 
             // 모달 새로고침
             openPostModal(currentPostId);
@@ -1211,7 +1220,11 @@
                 body: JSON.stringify({ content: content })
             });
 
-            if (!response.ok) throw new Error('댓글 작성 실패');
+            if (!response.ok) {
+                const error = await response.json();
+                alert(error.message || '댓글 작성 중 오류가 발생했습니다.');
+                return;
+            }
 
             const newComment = await response.json();
 
