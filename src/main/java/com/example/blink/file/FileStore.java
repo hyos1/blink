@@ -1,5 +1,7 @@
 package com.example.blink.file;
 
+import com.example.blink.exception.ServerException;
+import com.example.blink.exhandler.ErrorCode;
 import com.example.blink.file.request.UploadFile;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +40,7 @@ public class FileStore {
     // 단일 파일 저장
     public UploadFile storeFile(MultipartFile multipartFile){
         if (multipartFile.isEmpty()) {
-            return null; // null로 하는 게 맞을까? 예외?
+            return null;
         }
 
         String originalFilename = multipartFile.getOriginalFilename();
@@ -56,7 +58,7 @@ public class FileStore {
             multipartFile.transferTo(new File(fileDir + storeFileName));
         } catch (IOException e) {
             log.error("파일 저장 실패", e);
-            throw new RuntimeException("파일 저장 실패", e);
+            throw new ServerException(ErrorCode.FILE_UPLOAD_ERROR);
         }
         // ImageUrl 생성
         String imageUrl = "/postImages/" + storeFileName;
