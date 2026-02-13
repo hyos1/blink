@@ -5,9 +5,11 @@ import com.example.blink.exception.ClientException;
 import com.example.blink.exhandler.ErrorCode;
 import com.example.blink.file.request.UploadFile;
 import com.example.blink.repository.comment.CommentRepository;
+import com.example.blink.repository.comment.CommentCountDto;
 import com.example.blink.repository.member.MemberRepository;
 import com.example.blink.repository.post.PostRepository;
 import com.example.blink.repository.post.query.FeedPostDto;
+import com.example.blink.repository.postlike.LikeCountDto;
 import com.example.blink.repository.postlike.PostLikeRepository;
 import com.example.blink.service.post.request.CreatePostCommand;
 import com.example.blink.service.post.response.PostDetailDto;
@@ -17,12 +19,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.example.blink.exhandler.ErrorCode.*;
@@ -143,15 +145,81 @@ public class PostService {
     }
 
     // Feed 화면에 보여줄 게시물
-    public Page<FeedPostDto> getFeedPosts(Long loginMemberId, int page, int size) {
+//    public Page<FeedPostDto> getFeedPosts(Long loginMemberId, int page, int size) {
+//
+//        PageRequest pageRequest = PageRequest.of(page, size);
+//        Slice<Post> posts = postRepository.findAllWithMember(pageRequest);
+//        if (posts.isEmpty()) {
+//            return Page.empty();
+//        }
+//
+//        return posts.map(post -> {
+//            // 게시물 이미지 URL 추출
+//            List<String> imageUrls = new ArrayList<>();
+//            for (PostImage image : post.getImages()) {
+//                imageUrls.add(image.getImageUrl());
+//            }
+//
+//            // 좋아요 수
+//            Long postLikeCount = (long) post.getPostLikes().size();
+//
+//            // 댓글 수
+//            Long postCommentCount = (long) post.getComments().size();
+//
+//            boolean likedByMe = false;
+//
+//            for (PostLike postLike : post.getPostLikes()) {
+//                if (postLike.getMember().getId().equals(loginMemberId)) {
+//                    likedByMe = true;
+//                    break;
+//                }
+//            }
+//
+//            return new FeedPostDto(
+//                    post.getId(),
+//                    post.getContent(),
+//                    post.getCreatedAt(),
+//                    post.getMember().getId(),
+//                    post.getMember().getName(),
+//                    post.getMember().getProfileImage(),
+//                    imageUrls,
+//                    postLikeCount,
+//                    postCommentCount,
+//                    likedByMe
+//            );
+//        });
+//    }
+
+    public Slice<FeedPostDto> getFeedPosts(Long loginMemberId, int page, int size) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<Post> posts = postRepository.findAllWithMember(pageRequest);
-        if (posts.isEmpty()) {
-            return Page.empty();
+        Slice<Post> posts = postRepository.findFeedPostsWithMember(pageRequest);
+
+        if (!posts.hasContent()) {
+            return new SliceImpl<>(Collections.emptyList(), pageRequest, false);
         }
 
-        return posts.map(post -> {
+        // 게시물 ID들 추출
+        List<Long> postIds = posts.stream().map(p -> p.getId()).collect(Collectors.toList());
+
+        // PostId 별 좋아요 수 추출
+        List<LikeCountDto> likeCountDtos = postLikeRepository.countByPostIds(postIds);
+        Map<Long, Long> likeCountMap = new HashMap<>();
+        for (LikeCountDto likeCountDto : likeCountDtos) {
+            likeCountMap.put(likeCountDto.getPostId(), likeCountDto.getLikeCount());
+        }
+
+        // PostId 별 댓글 수 추출
+        List<CommentCountDto> commentCountDtos = commentRepository.countByPostIds(postIds);
+        Map<Long, Long> commentCountMap = new HashMap<>();
+        for (CommentCountDto commentCountDto : commentCountDtos) {
+            commentCountMap.put(commentCountDto.getPostId(), commentCountDto.getCommentCount());
+        }
+
+        // 로그인 사용자가 추출한 PostId 중 좋아요 누른 게시물 ID들
+        List<Long> likedByPostIds = postLikeRepository.findLikedByPostIds(postIds, loginMemberId);
+
+        List<FeedPostDto> content = posts.getContent().stream().map(post -> {
             // 게시물 이미지 URL 추출
             List<String> imageUrls = new ArrayList<>();
             for (PostImage image : post.getImages()) {
@@ -159,19 +227,14 @@ public class PostService {
             }
 
             // 좋아요 수
-            Long postLikeCount = (long) post.getPostLikes().size();
+            Long postLikeCount = likeCountMap.getOrDefault(post.getId(), 0L);
 
             // 댓글 수
-            Long postCommentCount = (long) post.getComments().size();
+            Long postCommentCount = commentCountMap.getOrDefault(post.getId(), 0L);
 
-            boolean likedByMe = false;
+            // 요청한 사람이 좋아요 눌렀는지 유무
+            boolean likedByMe = likedByPostIds.contains(post.getId());
 
-            for (PostLike postLike : post.getPostLikes()) {
-                if (postLike.getMember().getId().equals(loginMemberId)) {
-                    likedByMe = true;
-                    break;
-                }
-            }
 
             return new FeedPostDto(
                     post.getId(),
@@ -185,6 +248,9 @@ public class PostService {
                     postCommentCount,
                     likedByMe
             );
-        });
+        }).collect(Collectors.toList());
+
+        return new SliceImpl<>(content, pageRequest, posts.hasNext());
     }
+
 }

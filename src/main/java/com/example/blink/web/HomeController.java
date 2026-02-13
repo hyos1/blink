@@ -9,6 +9,7 @@ import com.example.blink.web.dto.LoginForm;
 import com.example.blink.web.session.SessionConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +44,7 @@ public class HomeController {
         model.addAttribute("myProfile", myProfile);
 
         // 피드 게시물들 (페이징)
-        Page<FeedPostDto> posts = postService.getFeedPosts(loginMember.getId(), page, 3);
+        Slice<FeedPostDto> posts = postService.getFeedPosts(loginMember.getId(), page, 3);
         model.addAttribute("posts", posts);
 
         return "feed";

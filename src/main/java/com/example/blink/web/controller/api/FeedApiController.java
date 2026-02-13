@@ -6,6 +6,7 @@ import com.example.blink.service.post.PostService;
 import com.example.blink.web.session.SessionConst;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ public class FeedApiController {
             Model model
     ) {
         // 게시물은 3개씩 페이징
-        Page<FeedPostDto> posts = postService.getFeedPosts(loginMember.getId(), page, 3);
+        Slice<FeedPostDto> posts = postService.getFeedPosts(loginMember.getId(), page, 3);
 
         model.addAttribute("posts", posts);
 
