@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
 
@@ -20,4 +22,17 @@ public interface PostLikeRepository extends JpaRepository<PostLike, Long> {
     boolean existsByPostIdAndMemberId(@Param("postId") Long postId, @Param("memberId") Long memberId);
 
     Optional<PostLike> findByPostIdAndMemberId(Long postId, Long memberId);
+
+    // 게시물 다건 조회 시 게시물 당 좋아요 수 조회
+    @Query("select new com.example.blink.repository.postlike.LikeCountDto(pl.post.id, count(pl)) " +
+            "from PostLike pl " +
+            "where pl.post.id in :postIds " +
+            "group by pl.post.id")
+    List<LikeCountDto> countByPostIds(@Param("postIds") List<Long> postIds);
+
+    @Query("select pl.post.id from PostLike pl " +
+            "where pl.post.id in :postIds " +
+            "and pl.member.id = :loginMemberId")
+    List<Long> findLikedByPostIds(@Param("postIds") List<Long> postIds,
+                                  @Param("loginMemberId") Long loginMemberId);
 }
