@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<body>
+
+<!-- 게시물 목록 Fragment -->
+<th:block th:fragment="post-list">
+    <div th:each="post : ${posts.content}" class="post" th:attr="data-post-id=${post.postId}">
+        <!-- 게시물 헤더 -->
+        <div class="post-header">
+            <div class="profile-pic">
+                <img th:if="${post.authorProfileImage}"
+                     th:src="${post.authorProfileImage}" alt="프로필">
+                <img th:unless="${post.authorProfileImage}"
+                     th:src="@{/images/default-profile.svg}" alt="기본 프로필 사진">
+            </div>
+            <div class="user-info">
+                <div class="name" th:text="${post.authorName}">사용자</div>
+                <div class="time" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">2시간 전</div>
+            </div>
+        </div>
+
+        <!-- 게시물 이미지 슬라이더 -->
+        <div class="post-images-container" th:if="${!#lists.isEmpty(post.imageUrls)}">
+            <div class="post-images-slider">
+                <img th:each="imageUrl : ${post.imageUrls}"
+                     th:src="${imageUrl}"
+                     class="post-image"
+                     alt="게시물 이미지">
+            </div>
+            <button class="slider-btn prev" th:if="${#lists.size(post.imageUrls) > 1}" onclick="moveSlider(this, -1)">◀</button>
+            <button class="slider-btn next" th:if="${#lists.size(post.imageUrls) > 1}" onclick="moveSlider(this, 1)">▶</button>
+            <div class="slider-dots" th:if="${#lists.size(post.imageUrls) > 1}">
+                <span th:each="i : ${#numbers.sequence(0, #lists.size(post.imageUrls) - 1)}"
+                      class="slider-dot"
+                      th:classappend="${i == 0} ? 'active' : ''"
+                      th:onclick="'jumpToSlide(this, ' + ${i} + ')'"
+                ></span>
+            </div>
+        </div>
+
+        <!-- 게시물 액션 -->
+        <div class="post-actions">
+            <button class="action-btn"
+                    th:classappend="${post.likedByMe} ? 'liked' : ''"
+                    th:attr="data-liked=${post.likedByMe}"
+                    th:onclick="'toggleLike(this, ' + ${post.postId} + ')'"
+                    th:text="${post.likedByMe} ? '♥' : '♡'">♡</button>
+            <!-- 댓글 버튼 클릭 시 모달 열기 -->
+            <button class="action-btn" th:onclick="'openPostModal(' + ${post.postId} + ')'">💬</button>
+            <button class="action-btn">📤</button>
+            <div class="spacer"></div>
+            <button class="action-btn">🔖</button>
+        </div>
+
+        <!-- 좋아요 수 -->
+        <div class="post-likes" th:text="'좋아요 ' + ${post.postLikeCount} + '개'">좋아요 1,234개</div>
+
+        <!-- 게시물 내용 -->
+        <div class="post-content">
+            <span class="name" th:text="${post.authorName}">사용자</span>
+            <span class="post-text" th:text="${post.content}">게시물 내용</span>
+        </div>
+
+        <!-- 댓글 보기 - 클릭 시 모달 열기 -->
+        <div class="view-comments"
+             th:if="${post.postCommentCount > 0}"
+             th:onclick="'openPostModal(' + ${post.postId} + ')'"
+             th:text="'댓글 ' + ${post.postCommentCount} + '개 모두 보기'">댓글 42개 모두 보기</div>
+
+        <!-- 댓글 추가 -->
+        <div class="add-comment">
+            <input type="text"
+                   class="comment-input"
+                   placeholder="댓글 달기..."
+                   th:attr="data-post-id=${post.postId}"
+                   onkeypress="if(event.key==='Enter') addCommentFromFeed(this)">
+            <button class="post-btn"
+                    disabled
+                    th:onclick="'addCommentFromFeed(this.previousElementSibling)'">게시</button>
+        </div>
+    </div>
+</th:block>
+
+</body>
+</html>
+<!--feed, post-item에 Page -> Slice로 변경 전 버전-->

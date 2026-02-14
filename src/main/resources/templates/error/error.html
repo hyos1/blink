@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>오류가 발생했습니다</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .error-container {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 500px;
+        }
+        .error-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        .error-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: #262626;
+            margin-bottom: 12px;
+        }
+        .error-message {
+            font-size: 16px;
+            color: #8e8e8e;
+            margin-bottom: 30px;
+        }
+        .error-btn {
+            padding: 12px 32px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .error-btn:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <div class="error-icon">⚠️</div>
+    <h1 class="error-title">오류가 발생했습니다</h1>
+    <p class="error-message" th:text="${errorMessage}">
+        일시적인 오류가 발생했습니다. 잠시 후 다시 시도해주세요.
+    </p>
+    <a href="/" class="error-btn">홈으로 돌아가기</a>
+</div>
+</body>
+</html>

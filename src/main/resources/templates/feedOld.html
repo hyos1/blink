@@ -278,6 +278,7 @@
         /* 중앙 피드 */
         .feed {
             max-width: 500px;
+            width: 100%;
             margin: 0 auto;
         }
 
@@ -286,6 +287,7 @@
             border: 1px solid #dbdbdb;
             border-radius: 8px;
             margin-bottom: 20px;
+            width: 100%;
         }
 
         .post-header {
@@ -338,6 +340,8 @@
             display: flex;
             transition: transform 0.3s ease;
             height: 100%;
+            width: 100%;
+            min-width: 100%;
         }
 
         .post-image {
@@ -942,6 +946,11 @@
             .post-image {
                 height: 350px;
             }
+
+            /* 👇 여기도 추가 */
+            .post-images-slider {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -1476,9 +1485,6 @@
                 return;
             }
 
-<!--            기존 댓글 작성 실패 로직-->
-<!--            if (!response.ok) throw new Error('댓글 작성 실패');-->
-
             if (!response.ok) {
                 const error = await response.json();
                 alert(error.message || '댓글 작성 중 오류가 발생했습니다.');
@@ -1531,8 +1537,6 @@
                 return;
             }
 
-<!--            기존 댓글 작성 실패 로직-->
-<!--            if (!response.ok) throw new Error('댓글 작성 실패');-->
             if (!response.ok) {
                 const error = await response.json();
                 alert(error.message || '댓글 작성 중 오류가 발생했습니다.');
@@ -1564,9 +1568,6 @@
                 return;
             }
 
-<!--            if (!response.ok) {-->
-<!--                throw new Error('게시물을 불러올 수 없습니다.');-->
-<!--            }-->
             if (!response.ok) {
                 const error = await response.json();
                 alert(error.message || '게시물을 불러올 수 없습니다.');
@@ -1702,8 +1703,6 @@
                 return;
             }
 
-<!--            if (!response.ok) throw new Error('삭제 실패');-->
-
             if (!response.ok) {
                 const error = await response.json();
                 alert(error.message || '댓글 삭제 중 오류가 발생했습니다.');
@@ -1784,7 +1783,7 @@
 
         const nextPage = currentPage + 1;
 
-        fetch(`/posts/feed?page=${nextPage}`, {
+        fetch(`/api/feed?page=${nextPage}`, {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }

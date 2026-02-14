@@ -48,7 +48,6 @@ public class PostApiController {
             @PathVariable Long postId,
             @SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
             @RequestBody CommentRequestDto commentRequestDto) {
-        // 댓글 dto에서도 검증할지 객체 내부 검증으로 끝낼지 고민(bindingResult)
         log.info("댓글 ={}", commentRequestDto.getContent());
         return commentService.addComment(postId, loginMember.getId(), commentRequestDto.getContent());
     }

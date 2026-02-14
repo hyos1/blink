@@ -4,7 +4,6 @@ import com.example.blink.domain.Comment;
 import com.example.blink.domain.Member;
 import com.example.blink.domain.Post;
 import com.example.blink.file.request.UploadFile;
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,37 +41,10 @@ public class InitData implements ApplicationRunner {
                 em.persist(post);
 
                 for (int c = 0; c < 3; c++) {
-                    Comment.createComment("댓글" + c, member);
+                    Comment comment = Comment.createComment("댓글" + c, member);
+                    post.addComment(comment);
                 }
             }
         }
     }
-//
-//    @PostConstruct
-//    public void init() {
-//        initData();
-//    }
-//
-//    @Transactional
-//    public void initData() {
-//        for (int i = 0; i < 100; i++) {
-//            String encodedPassword = passwordEncoder.encode("1234");
-//            Member member = new Member("user" + i, "user" + i + "@test.com", encodedPassword);
-//            em.persist(member);
-//
-//            for (int p = 1; p <= 10; p++) {
-//                List<UploadFile> images = List.of(
-//                        new UploadFile("dummy1.jpg", "/postImages/dummy1.jpg"),
-//                        new UploadFile("dummy2.jpg", "/postImages/dummy2.jpg"),
-//                        new UploadFile("dummy3.jpg", "/postImages/dummy3.jpg")
-//                );
-//                Post post = Post.createPost(member.getName() + "의 게시물", member, images);
-//                em.persist(post);
-//
-//                for (int c = 0; c < 3; c++) {
-//                    Comment.createComment("댓글" + c, member);
-//                }
-//            }
-//        }
-//    }
 }
