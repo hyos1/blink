@@ -79,6 +79,8 @@
                     th:onclick="'addCommentFromFeed(this.previousElementSibling)'">게시</button>
         </div>
     </div>
+    <!-- 페이지 정보 (숨김) -->
+    <div style="display: none;" th:attr="data-has-next=${posts.hasNext()}"></div>
 </th:block>
 
 </body>

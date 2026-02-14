@@ -1042,7 +1042,7 @@
 
     <!-- 중앙 피드 -->
     <main class="feed">
-        <div th:if="${posts.totalElements == 0}" class="empty-state">
+        <div th:if="${posts.content.size() == 0}" class="empty-state">
             <div class="empty-icon">📷</div>
             <div class="empty-title">아직 게시물이 없어요</div>
             <div class="empty-description">
@@ -1053,7 +1053,7 @@
             </button>
         </div>
 
-        <div id="posts-container" th:unless="${posts.totalElements == 0}">
+        <div id="posts-container" th:unless="${posts.content.size() == 0}">
             <th:block th:replace="~{fragments/post-item :: post-list}"></th:block>
         </div>
 
@@ -1805,8 +1805,8 @@
                 currentPage = nextPage;
                 enableCommentInputs();
 
-                const pageInfo = document.querySelector('[data-is-last]');
-                if (pageInfo && pageInfo.getAttribute('data-is-last') === 'true') {
+                const pageInfo = document.querySelector('[data-has-next]');
+                if (pageInfo && pageInfo.getAttribute('data-has-next') === 'false') {
                     isLastPage = true;
                     document.getElementById('no-more-posts').style.display = 'block';
                 }
