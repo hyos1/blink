@@ -2,8 +2,8 @@ package com.example.blink.repository.post;
 
 import com.example.blink.domain.Post;
 import com.example.blink.service.post.response.ProfilePostDto;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -44,5 +44,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select p from Post p " +
             "join fetch p.member m " +
             "order by p.createdAt desc")
-    Page<Post> findAllWithMember(Pageable pageable);
+    Slice<Post> findFeedPostsWithMember(Pageable pageable);
+
+
+    // Post + Member + PostImage(순서 정렬)
+    @Query("select distinct p from Post p " +
+            "join fetch p.member m " +
+            "left join fetch p.images i " +
+            "where p.id = :postId " +
+            "order by i.orderNum")
+    Optional<Post> findPostWithMemberAndImagesById(@Param("postId") Long postId);
 }
