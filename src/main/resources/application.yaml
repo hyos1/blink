@@ -1,7 +1,4 @@
 spring:
-  profiles:
-    active: local
-
   messages:
     basename: messages, errors #오류 메세지 errors.properties 등록, messages는 default값
 
@@ -10,32 +7,15 @@ spring:
       max-file-size: 10MB # 파일 하나 당 크기
       max-request-size: 50MB #한 요청에 Multipart 전체 크기 제한
 
-
   jpa:
-    hibernate:
-      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
     open-in-view: false #영속성 컨텍스트를 트랜잭션 종료시 종료
 
-  # 콘솔 창 색상 설정
-  output:
-    ansi:
-      enabled: always
-
-logging.level:
-  org.hibernate.SQL: debug
-  org.springframework.web: DEBUG
-  org.springframework.boot.web.servlet.error: DEBUG
-#  org.hibernate.type: trace #파라미터 바인딩 확인
-
 # 세션 타임아웃 설정
 server:
   servlet:
     session:
-      timeout: 60
-#      cookie:
-#        http-only: true
-#        secure: true #HTTPS 배포시 필요
+      timeout: 600
