@@ -26,7 +26,7 @@ public class InitData implements ApplicationRunner {
     @Override
     @Transactional
     public void run(ApplicationArguments args) throws Exception {
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 10; i++) {
             String encodedPassword = passwordEncoder.encode("1234");
             Member member = new Member("user" + i, "user" + i + "@test.com", encodedPassword);
             em.persist(member);
