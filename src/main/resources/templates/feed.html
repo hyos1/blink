@@ -1236,6 +1236,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         loadRecommendations();
         enableCommentInputs();
+        formatAllTimestamps();
     });
 
     async function loadRecommendations() {
@@ -1288,6 +1289,14 @@
                 </div>
             `;
         }
+    }
+
+    // 모든 타임스탬프 포맷팅
+    function formatAllTimestamps() {
+        document.querySelectorAll('.time[data-timestamp]').forEach(timeEl => {
+            const timestamp = timeEl.getAttribute('data-timestamp');
+            timeEl.textContent = formatDate(timestamp);
+        });
     }
 
     // 팔로우 버튼 클릭

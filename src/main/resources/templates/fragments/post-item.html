@@ -15,7 +15,9 @@
             </div>
             <div class="user-info">
                 <div class="name" th:text="${post.authorName}">사용자</div>
-                <div class="time" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">2시간 전</div>
+                <div class="time"
+                     th:attr="data-timestamp=${post.createdAt}"
+                     th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">2시간 전</div>
             </div>
         </div>
 
