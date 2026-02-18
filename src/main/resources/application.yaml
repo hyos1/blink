@@ -19,3 +19,7 @@ server:
   servlet:
     session:
       timeout: 600
+
+logging.level:
+  org.hibernate.SQL: DEBUG
+  org.springframework.web: INFO
