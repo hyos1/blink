@@ -38,4 +38,3 @@ out/
 
 # local config
 application-local.yaml
-application-prod.yaml
