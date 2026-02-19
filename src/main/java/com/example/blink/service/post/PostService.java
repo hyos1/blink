@@ -2,6 +2,7 @@ package com.example.blink.service.post;
 
 import com.example.blink.domain.*;
 import com.example.blink.exception.ClientException;
+import com.example.blink.file.FileStore;
 import com.example.blink.file.request.UploadFile;
 import com.example.blink.repository.comment.CommentRepository;
 import com.example.blink.repository.comment.CommentCountDto;
@@ -37,6 +38,7 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final PostLikeRepository postLikeRepository;
     private final CommentRepository commentRepository;
+    private final FileStore fileStore;
 
     // 게시물 생성
     @Transactional
@@ -132,6 +134,12 @@ public class PostService {
         if (!post.getMember().getId().equals(loginMemberId)) {
             throw new ClientException(POST_DELETE_FORBIDDEN); // 본인 게시물만 삭제 가능
         }
+
+        List<PostImage> postImages = post.getImages();
+        for (PostImage postImage : postImages) {
+            String fileName = extractFileNameFromUrl(postImage.getImageUrl());
+            fileStore.deleteFile(fileName);
+        }
         postRepository.delete(post);
     }
 
@@ -199,4 +207,7 @@ public class PostService {
         return new SliceImpl<>(content, pageRequest, posts.hasNext());
     }
 
+    private String extractFileNameFromUrl(String imageUrl) {
+        return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+    }
 }
