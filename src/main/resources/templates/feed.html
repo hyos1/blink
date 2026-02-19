@@ -1785,8 +1785,10 @@
     }
 
     function loadMorePosts() {
+        // ⭐ 핵심: 로딩 중이거나 마지막 페이지면 즉시 리턴!
         if (isLoading || isLastPage) return;
 
+        // ⭐ 플래그 즉시 설정 (중복 요청 차단)
         isLoading = true;
         document.getElementById('loading').style.display = 'block';
 
@@ -1813,9 +1815,13 @@
 
                 currentPage = nextPage;
                 enableCommentInputs();
+                formatAllTimestamps(); // ⭐ 새 게시물 시간 포맷팅
 
-                const pageInfo = document.querySelector('[data-has-next]');
-                if (pageInfo && pageInfo.getAttribute('data-has-next') === 'false') {
+                // ⭐ 페이지 정보 확인 (새로 추가된 것 중에서 찾기)
+                const allPageInfos = document.querySelectorAll('[data-has-next]');
+                const lastPageInfo = allPageInfos[allPageInfos.length - 1];
+
+                if (lastPageInfo && lastPageInfo.getAttribute('data-has-next') === 'false') {
                     isLastPage = true;
                     document.getElementById('no-more-posts').style.display = 'block';
                 }
@@ -1825,20 +1831,24 @@
             }
 
             document.getElementById('loading').style.display = 'none';
-            isLoading = false;
+            isLoading = false; // ⭐ 완료 후 플래그 해제
         })
         .catch(error => {
             console.error('게시물 로딩 중 오류:', error);
             document.getElementById('loading').style.display = 'none';
-            isLoading = false;
+            isLoading = false; // ⭐ 에러 발생해도 플래그 해제
         });
     }
 
     window.addEventListener('scroll', function() {
+        // 이미 로딩 중이거나 마지막 페이지면 계산조차 안 함
+        if (isLoading || isLastPage) return;
+
         const scrollHeight = document.documentElement.scrollHeight;
         const scrollTop = document.documentElement.scrollTop;
         const clientHeight = document.documentElement.clientHeight;
 
+        // 하단 300px 남았을 때
         if (scrollTop + clientHeight >= scrollHeight - 300) {
             loadMorePosts();
         }
