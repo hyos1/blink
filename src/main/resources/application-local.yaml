@@ -1,9 +1,31 @@
 spring:
+  autoconfigure:
+    exclude:
+      - io.awspring.cloud.autoconfigure.s3.S3AutoConfiguration
+  config:
+    activate:
+      on-profile: local
+# h2 DB용
+#  datasource:
+#    url:  jdbc:h2:tcp://localhost/~/blink
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+
+  # MySQL 용
   datasource:
-    url:  jdbc:h2:tcp://localhost/~/blink
-    username: sa
+    url: jdbc:mysql://localhost:3306/blink?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
     password:
-    driver-class-name: org.h2.Driver
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+  # 콘솔 창 색상 설정
+  output:
+    ansi:
+      enabled: always
 
 file:
   dir: C:\\Users\\hyozz\\study\\blink\\postImage\\
