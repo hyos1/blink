@@ -1,8 +1,9 @@
 package com.example.blink.web.controller.api;
 
-import com.example.blink.file.FileStore;
+import com.example.blink.file.LocalFileStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,16 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.MalformedURLException;
 
 @RestController
+@Profile("local")
 @RequiredArgsConstructor
-public class PostImageController {
+public class PostImageApiController {
 
-    private final FileStore fileStore;
-
-    @Value("${file.dir}")
-    private String fileDir;
+    private final LocalFileStore localFileStore;
 
     @GetMapping("/postImages/{imageUrl}")
     public Resource thumbnailImage(@PathVariable String imageUrl) throws MalformedURLException {
-        return new UrlResource("file:" + fileDir + imageUrl);
+        return new UrlResource("file:" + localFileStore.getFullPath(imageUrl));
     }
 }
