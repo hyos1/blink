@@ -77,6 +77,4 @@ public class S3FileStore implements FileStore {
         String uuid = UUID.randomUUID().toString();
         return uuid + "." + ext;
     }
-
-
 }

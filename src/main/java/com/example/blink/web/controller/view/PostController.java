@@ -29,6 +29,7 @@ public class PostController {
         return "posts/addPost";
     }
 
+    // 게시물 추가
     @PostMapping("/add")
     public String add(@SessionAttribute(name = SessionConst.LOGIN_MEMBER) LoginMember loginMember,
                       @ModelAttribute CreatePostForm form,
