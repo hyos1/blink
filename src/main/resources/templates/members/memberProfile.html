@@ -699,11 +699,17 @@
 
                 <!-- 본인 프로필일 때 -->
                 <button th:if="*{isMyProfile}" class="edit-profile-btn"
-                        th:onclick="|location.href='@{/members/profile/edit}'|">프로필 편집
+                        th:onclick="alert('추후 업데이트 예정입니다!')">프로필 편집
                 </button>
+<!--                <button th:if="*{isMyProfile}" class="edit-profile-btn"-->
+<!--                        th:onclick="|location.href='@{/members/profile/edit}'|">프로필 편집-->
+<!--                </button>-->
                 <button th:if="*{isMyProfile}" class="icon-btn"
-                        th:onclick="|location.href='/settings'|">⚙️
+                        th:onclick="alert('추후 업데이트 예정입니다!')">⚙️
                 </button>
+<!--                <button th:if="*{isMyProfile}" class="icon-btn"-->
+<!--                        th:onclick="|location.href='/settings'|">⚙️-->
+<!--                </button>-->
 
                 <!-- 다른 사람 프로필일 때 -->
                 <form th:unless="*{isMyProfile}"

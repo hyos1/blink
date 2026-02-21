@@ -28,11 +28,13 @@ public class MemberController {
     private final MemberService memberService;
     private final PostService postService;
 
+    // 회원가입 페이지 이동
     @GetMapping("/add")
     public String addForm(@ModelAttribute SignupForm form) {
         return "members/addMemberForm";
     }
 
+    // 회원가입 처리
     @PostMapping("/add")
     public String save(@Validated @ModelAttribute SignupForm form, BindingResult bindingResult) {
 
