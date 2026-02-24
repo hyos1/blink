@@ -5,6 +5,9 @@ Instagram 스타일의 소셜 미디어 플랫폼입니다.
 SSR 기반 화면을 추가하여 구현한 API의 동작을 확인하고 <br/>
 성능 최적화, AWS(EC2, RDS, S3) 배포까지 경험하기 위해 만든 개인 프로젝트입니다. 
 
+[![Tistory](https://img.shields.io/badge/Blog-FF5722?style=flat-square&logo=blogger)](https://hyodicube.tistory.com/)
+[![Notion](https://img.shields.io/badge/Notion-000000?style=flat-square&logo=notion&logoColor=white)](https://www.notion.so/Blink-SNS-2df27b52447580dd89c2d6f05fba8a79)
+
 ### 프로젝트 개요
 
 - **개발 기간**: 2025.12.07 ~ 2026.02.20
